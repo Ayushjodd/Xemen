@@ -1,9 +1,12 @@
-name: Build,Lint on PR 
+name: Build, Lint on PR and Push
 
 on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - '**'
 
 jobs:
   build:
@@ -21,7 +24,7 @@ jobs:
       - name: Lint Test
         run: npm run lint
         
-      - name: Generate prisma client
+      - name: Generate Prisma Client
         run: npm run db:generate
 
       - name: Run Build
