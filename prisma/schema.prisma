@@ -4,6 +4,12 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,8 +20,29 @@ datasource db {
 }
 
 model User {
+  id   String @id @default(uuid())
+  username String
+  password String?
+  sub String @default("")
+  name     String? @default("")
+  profilePicture String? @default("")
+  solWallet SolWallet?
+  provider Provider
+
+  @@unique([username, provider]) 
+}
+
+
+enum Provider {
+   Google
+   Github
+   Discord
+}
+
+model SolWallet {
   id String @id @default(uuid())
-  name String?
-  email String? @unique
-  image String?
+  publicKey String
+  privateKey String
+  userId String @unique
+  user User @relation(fields: [userId], references: [id],onDelete: Cascade)
 }
