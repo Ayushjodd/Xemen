@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState } from "react";
@@ -17,6 +19,7 @@ import ShoppingCartIcon from "../icons/ShoppingCart";
 import FilterIcon from "../icons/FilterIcon";
 import SearchIcon from "../icons/SearchIcons";
 import CardComp from "../shared/CardComp";
+import { useRouter } from "next/navigation";
 
 export default function AllComponent() {
   const [products, setProducts] = useState([
@@ -25,58 +28,67 @@ export default function AllComponent() {
       name: "Wireless Headphones",
       description: "High-quality sound with noise cancellation",
       price: 99.99,
-      image: "/placeholder.svg",
+      image:
+        "https://plus.unsplash.com/premium_photo-1678099940967-73fe30680949?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
     {
       id: 2,
       name: "Smartwatch",
       description: "Tracks your fitness and sleep",
       price: 149.99,
-      image: "/placeholder.svg",
+      image:
+        "https://images.unsplash.com/photo-1591147810559-9ae8cc24c862?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
     {
       id: 3,
       name: "Gaming Mouse",
       description: "Precise control for gaming",
       price: 59.99,
-      image: "/placeholder.svg",
+      image:
+        "https://images.unsplash.com/photo-1628832306751-ec751454119c?q=80&w=1890&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
     {
       id: 4,
       name: "Laptop Backpack",
       description: "Durable and comfortable",
       price: 79.99,
-      image: "/placeholder.svg",
+      image:
+        "https://images.unsplash.com/photo-1667411424598-96b5e5f3139b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
     {
       id: 5,
       name: "Portable Bluetooth Speaker",
       description: "Powerful sound in a compact design",
       price: 89.99,
-      image: "/placeholder.svg",
+      image:
+        "https://images.unsplash.com/photo-1507878566509-a0dbe19677a5?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
     {
       id: 6,
       name: "DSLR Camera",
       description: "Professional-grade photography",
       price: 799.99,
-      image: "/placeholder.svg",
+      image:
+        "https://images.unsplash.com/photo-1533246860975-b290a87773d3?q=80&w=2128&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
     {
       id: 7,
       name: "Fitness Tracker",
       description: "Monitor your daily activity",
       price: 49.99,
-      image: "/placeholder.svg",
+      image:
+        "https://images.unsplash.com/photo-1557935728-e6d1eaabe558?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
     {
       id: 8,
       name: "Wireless Charging Pad",
       description: "Convenient and fast charging",
       price: 39.99,
-      image: "/placeholder.svg",
+      image:
+        "https://images.unsplash.com/photo-1677870367958-11dd9592089d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
   ]);
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -88,10 +100,14 @@ export default function AllComponent() {
   };
   return (
     <div className="bg-muted/40 min-h-screen">
-      <header className="bg-background shadow-sm sticky top-0 z-10">
+      <header className="bg-background shadow-sm sticky top-0 z-10 p-2">
         <div className="container mx-auto px-4 md:px-6 flex items-center justify-between h-16">
           <Link href="#" className="text-2xl font-bold" prefetch={false}>
-            Xemen
+            <img
+              className="rounded-lg border hover:border-1  hover:border-black"
+              width={197}
+              src="https://pbs.twimg.com/media/GVNAwakWgAAnSHP?format=png&name=small"
+            />
           </Link>
           <div className="relative flex-1 max-w-md">
             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -109,7 +125,13 @@ export default function AllComponent() {
             </Button>
           </div>
           <div className="flex items-center gap-4">
-            <Button size="icon" variant="ghost">
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => {
+                router.push("/cart");
+              }}
+            >
               <ShoppingCartIcon className="w-6 h-6 text-muted-foreground" />
             </Button>
             <Avatar className="w-8 h-8 border">
