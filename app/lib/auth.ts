@@ -4,7 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import DiscordProvider from "next-auth/providers/discord";
 import { Keypair } from "@solana/web3.js";
-import { Provider } from "@prisma/client";
+
 
 export interface session extends Session {
   user: {
@@ -45,7 +45,7 @@ export const authOptions = {
             username_provider: {
               username: token.email || token.name,
               provider: (account.provider.charAt(0).toUpperCase() +
-                account.provider.slice(1)) as Provider,
+                account.provider.slice(1)),
             },
           },
         });
@@ -59,7 +59,7 @@ export const authOptions = {
       if (!account || !profile) return false;
 
       const provider = (account.provider.charAt(0).toUpperCase() +
-        account.provider.slice(1)) as Provider;
+        account.provider.slice(1));
       let username, email, name, profilePicture;
 
       if (account.provider === "google") {
@@ -75,7 +75,7 @@ export const authOptions = {
         name = profile?.name;
         profilePicture = profile?.avatar_url;
       } else {
-        return false; // Unsupported provider
+        return false; 
       }
 
       if (!username) return false;
@@ -92,7 +92,7 @@ export const authOptions = {
               provider,
             },
           },
-          update: {}, // No updates if user exists
+          update: {}, 
           create: {
             username,
             name,
