@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/lib/auth"; 
 import prisma from "@/db/db";
 import { NextRequest, NextResponse } from "next/server";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 export async function POST(req: NextRequest) {
     try {
@@ -34,14 +35,16 @@ export async function POST(req: NextRequest) {
             category: string;
         } = await req.json();
 
-       
+       const priceLamports = Math.round(price * LAMPORTS_PER_SOL);
+
         const product = await prisma.product.create({
             data: {
                 title,
                 description,
-                price,
+                price:priceLamports,
                 imageUrl,
                 category,
+                sellerName:username,
                 seller: {
                     connect: {
                         id: sellerId,
@@ -50,7 +53,12 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        return NextResponse.json({ success: true, product });
+        const productWithStringBigInt = {
+            ...product,
+            price: product.price.toString(),
+        };
+
+        return NextResponse.json({ success: true, product: productWithStringBigInt });
     } catch (error) {
         console.error("Error creating product:", error);
         return NextResponse.json(
