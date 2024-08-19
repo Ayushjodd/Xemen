@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "Order" ALTER COLUMN "totalPrice" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "Product" ALTER COLUMN "price" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "SolWallet" ALTER COLUMN "balance" SET DATA TYPE BIGINT;

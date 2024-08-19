@@ -1,20 +1,37 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "Provider" AS ENUM ('Google', 'Github', 'Discord');
 
-  - A unique constraint covering the columns `[username]` on the table `User` will be added. If there are existing duplicate values, this will fail.
-  - A unique constraint covering the columns `[email]` on the table `User` will be added. If there are existing duplicate values, this will fail.
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "password" TEXT,
+    "name" TEXT DEFAULT '',
+    "profilePicture" TEXT DEFAULT '',
+    "provider" "Provider" NOT NULL,
+    "sub" TEXT NOT NULL DEFAULT '',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-*/
--- AlterTable
-ALTER TABLE "User" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "email" TEXT;
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "SolWallet" (
+    "id" TEXT NOT NULL,
+    "publicKey" TEXT NOT NULL,
+    "privateKey" TEXT NOT NULL,
+    "balance" INTEGER NOT NULL DEFAULT 0,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "SolWallet_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Product" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "price" DOUBLE PRECISION NOT NULL,
+    "price" INTEGER NOT NULL,
     "imageUrl" TEXT,
     "category" TEXT NOT NULL,
     "sellerId" TEXT NOT NULL,
@@ -48,7 +65,7 @@ CREATE TABLE "CartItem" (
 CREATE TABLE "Order" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "totalPrice" DOUBLE PRECISION NOT NULL,
+    "totalPrice" INTEGER NOT NULL,
     "status" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -67,13 +84,16 @@ CREATE TABLE "OrderItem" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_username_provider_key" ON "User"("username", "provider");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SolWallet_userId_key" ON "SolWallet"("userId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Cart_userId_key" ON "Cart"("userId");
 
--- CreateIndex
-CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+-- AddForeignKey
+ALTER TABLE "SolWallet" ADD CONSTRAINT "SolWallet_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Product" ADD CONSTRAINT "Product_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
