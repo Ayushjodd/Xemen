@@ -4,9 +4,9 @@ import { authOptions } from "@/app/lib/auth";
 import prisma from "@/db/db";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET({ params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, context: { params: { id: string } }) {
     try {
         const session = await getServerSession(authOptions);
 
@@ -16,7 +16,7 @@ export async function GET({ params }: { params: { id: string } }) {
             }, { status: 401 });
         }
 
-        const { id } = params; 
+        const { id } = context.params; 
 
         const product = await prisma.product.findUnique({
            where:{
