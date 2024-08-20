@@ -93,6 +93,7 @@ export async function PUT(
 
     return NextResponse.json({
       success: true,
+      message:"Product details updated successfully",
       product: productWithStringBigInt,
     });
   } catch (error) {
