@@ -1,3 +1,108 @@
+# Xemen
+
+## About
+
+**Xemen** is a versatile project, designed to offer users a seamless experience in managing their Solana wallets and conducting transactions. In this project, users can sign up, receive a Solana wallet, and use their wallet balance to purchase products or transfer funds (future feature). This project also incorporates e-commerce functionality, allowing users to sell or purchase products on the platform.
+
+While currently focused on Solana Devnet transactions for hackathon purposes, Xemen provides a solid foundation for building a robust blockchain-based payment and e-commerce solution.
+
+## Tech Stack
+
+- **Next.js** - Full-stack framework for building the backend and frontend.
+- **Prisma ORM** - Object-relational mapping for PostgreSQL database.
+- **PostgreSQL** - Database for storing user and transaction data.
+- **Next Auth** - Authentication system for secure user login.
+- **Solana** - Blockchain platform for managing Solana wallets and transactions.
+
+- **React.js** - JavaScript framework for building user interfaces.
+- **ShadCN** - A utility-first CSS framework for building responsive designs.
+- **Tailwind CSS** - Utility-first CSS framework for styling.
+
+## Features
+- **Solana Wallet Integration**: Upon signup, users receive a Solana wallet.
+- **Transaction Logic**: Users can send and receive money using their Solana wallet balance (as per now via selling or purchasing,In future will improve it by wallet to wallet transaction).
+- **E-commerce Functionality**: Users can sell and purchase products.
+- **Devnet Transactions**: Currently, transactions are conducted on Solana Devnet for testing and development purposes.
+- **Hashed Passwords**: Passwords are hashed before storing in the database for enhanced security.
+
+## Setup Instructions
+
+### Clone the Repository
+
+```bash
+git clone <repo_url>
+cd Xemen
+```
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Environment Setup
+
+- Copy the `.env.example` file to `.env`:
+
+```bash
+cp .env.example .env
+```
+
+- Update the `.env` file with the necessary environment variables, including database credentials and Solana API keys.
+
+### Database Setup
+
+- Run the following commands to set up your database schema and generate Prisma client:
+
+```bash
+npx prisma migrate dev
+```
+
+or
+
+```bash
+npx prisma db push
+```
+
+- If you need to regenerate the Prisma client, run:
+
+```bash
+npx prisma generate
+```
+
+### Running the Project
+
+- For development mode, run:
+
+```bash
+npm run dev
+```
+
+- For production mode, build and start the server:
+
+```bash
+npm run build
+npm run start
+```
+
+## Usage
+
+- **Sign Up**: Create an account and receive a Solana wallet.
+- **Add Money**: Add funds to your Solana wallet from the Solana Devnet.
+- **Make Purchases**: Use your wallet balance to purchase products on the platform.
+- **Sell Products**: List products for sale on the platform.
+
+## Future Improvements
+
+- **Mainnet Integration**: Transition from Solana Devnet to Mainnet for real-world transactions.
+- **Wallet-to-Wallet Transfers**: Implement the ability to transfer funds between wallets.
+- **Additional Payment Methods**: Integrate more payment options like UPI or traditional bank transfers.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
 
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
