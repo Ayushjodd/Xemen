@@ -1,9 +1,11 @@
-"use server";
+// "use server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth";
 import prisma from "@/db/db";
 import { NextResponse } from "next/server";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
