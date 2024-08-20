@@ -28,6 +28,7 @@ While currently focused on Solana Devnet transactions for hackathon purposes, Xe
 ## Setup Instructions
 
 ### Clone the Repository
+- At first,Fork the repo Then
 
 ```bash
 git clone <repo_url>
