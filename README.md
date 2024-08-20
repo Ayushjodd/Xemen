@@ -98,6 +98,10 @@ npm run start
 - **Wallet-to-Wallet Transfers**: Implement the ability to transfer funds between wallets.
 - **Additional Payment Methods**: Integrate more payment options like UPI or traditional bank transfers.
 
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
 ---
 
 
