@@ -5,7 +5,7 @@ import { Button } from "../ui/newButton";
 
 export default function CardComp(props: any) {
   return (
-    <Card>
+    <Card className="transition-transform duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2">
       <CardContent className="flex flex-col items-center justify-center p-6">
         <img
           src={props.url}
