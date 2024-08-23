@@ -43,30 +43,13 @@ export default function CardProduct() {
           </BreadcrumbList>
         </Breadcrumb>
         <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-          <div>
-            <Carousel className="rounded-lg overflow-hidden">
-              <CarouselContent>
-                {[1, 2, 3].map((_, index) => (
-                  <CarouselItem key={index}>
-                    <img
-                      src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                      alt="Product Image"
-                      width={800}
-                      height={800}
-                      className="object-cover w-full h-[400px] md:h-[600px] rounded-md transition-transform duration-300 ease-in-out transform hover:scale-105"
-                      style={{ aspectRatio: "800/800", objectFit: "cover" }}
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-4 z-10 bg-background/50 rounded-full p-2 hover:bg-background/75 transition-colors">
-                <ChevronLeftIcon className="w-6 h-6 text-foreground" />
-              </CarouselPrevious>
-              <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-4 z-10 bg-background/50 rounded-full p-2 hover:bg-background/75 transition-colors">
-                <ChevronRightIcon className="w-6 h-6 text-foreground" />
-              </CarouselNext>
-            </Carousel>
+          <div className="w-full h-[400px] md:h-[600px] overflow-hidden rounded-md">
+            <img
+              className="object-cover w-full h-full transition-transform duration-300 ease-in-out transform hover:scale-105"
+              src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            />
           </div>
+
           <div className="grid gap-6">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold">
