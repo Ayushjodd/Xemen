@@ -10,7 +10,7 @@ interface Listing {
   name: string;
   description: string;
   price: number;
-  image: File | null;
+  imageUrl: string;
 }
 
 export default function ListAnItem() {
@@ -19,8 +19,11 @@ export default function ListAnItem() {
     name: "",
     description: "",
     price: 0,
-    image: null,
+    imageUrl: "",
   });
+  const [imageUrlError, setImageUrlError] = useState<string | null>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -31,39 +34,73 @@ export default function ListAnItem() {
     });
   };
 
-  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setNewListing({
-        ...newListing,
-        image: e.target.files[0],
+  const validateImageUrl = (url: string) => {
+    const urlPattern = new RegExp(
+      "^(https?:\\/\\/)?" + // protocol
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|" + // domain name
+        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+        "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+        "(\\#[-a-z\\d_]*)?$",
+      "i" // fragment locator
+    );
+    return !!urlPattern.test(url);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateImageUrl(newListing.imageUrl)) {
+      setImageUrlError("Please enter a valid image URL.");
+      return;
+    }
+
+    setImageUrlError(null);
+
+    try {
+      const response = await fetch("/api/product/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: newListing.name,
+          description: newListing.description,
+          price: newListing.price,
+          imageUrl: newListing.imageUrl,
+          category: "default-category", // Adjust as needed
+        }),
       });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSuccessMessage("Item listed successfully!");
+        setListings([...listings, newListing]);
+        setNewListing({
+          name: "",
+          description: "",
+          price: 0,
+          imageUrl: "",
+        });
+      } else {
+        setApiError(result.message || "Failed to list item.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setApiError("Failed to list item.");
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setListings([...listings, newListing]);
-    setNewListing({
-      name: "",
-      description: "",
-      price: 0,
-      image: null,
-    });
-  };
-
-  const renderImageUrl = (image: File | null) => {
-    return image ? URL.createObjectURL(image) : "/placeholder.svg";
-  };
-
   return (
-    <div className="container mx-auto py-8 bg-gray-">
-      <h1 className="text-3xl font-bold mb-6 border-b text-center pb-2 text-green-600">
+    <div className="container mx-auto py-8 ">
+      <h1 className="text-3xl font-bold mb-20 border-b text-center pb-2 text-green-600">
         List an Item for Sale
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 ">
+      <div className="mx-auto max-w-2xl">
         <div className="border rounded-lg shadow-lg">
           <form
-            className="bg-background p-6 rounded-lg shadow-md"
+            className="bg-white p-6 rounded-lg shadow-md"
             onSubmit={handleSubmit}
           >
             <div className="mb-4">
@@ -77,7 +114,7 @@ export default function ListAnItem() {
                 value={newListing.name}
                 onChange={handleInputChange}
                 placeholder="Enter product name"
-                className="w-full"
+                className="w-full border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
               />
             </div>
             <div className="mb-4">
@@ -90,7 +127,7 @@ export default function ListAnItem() {
                 value={newListing.description}
                 onChange={handleInputChange}
                 placeholder="Enter product description"
-                className="w-full"
+                className="w-full border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
               />
             </div>
             <div className="mb-4">
@@ -104,54 +141,40 @@ export default function ListAnItem() {
                 value={newListing.price}
                 onChange={handleInputChange}
                 placeholder="Enter product price"
-                className="w-full"
+                className="w-full border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                min="0" // kahi to dalla -ve mai input dede💀
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="image" className="block font-medium mb-2">
-                Upload Image
+              <label htmlFor="imageUrl" className="block font-medium mb-2">
+                Image URL
               </label>
               <Input
-                type="file"
-                id="image"
-                name="image"
-                onChange={handleImageUpload}
-                className="w-full"
+                type="text"
+                id="imageUrl"
+                name="imageUrl"
+                value={newListing.imageUrl}
+                onChange={handleInputChange}
+                placeholder="Enter image URL"
+                className="w-full border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
               />
+              {imageUrlError && (
+                <p className="text-red-500 text-sm mt-1">{imageUrlError}</p>
+              )}
             </div>
-            <Button type="submit" className="w-full">
-              Sell
+            {apiError && (
+              <p className="text-red-500 text-sm mb-4">{apiError}</p>
+            )}
+            {successMessage && (
+              <p className="text-green-500 text-sm mb-4">{successMessage}</p>
+            )}
+            <Button
+              type="submit"
+              className="w-full bg-green-600 text-white hover:bg-green-700 rounded-lg py-2"
+            >
+              List Item
             </Button>
           </form>
-        </div>
-        <div className="border rounded-lg p-2 shadow-lg">
-          <h2 className="text-2xl font-bold mb-4">Active Listings</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {listings.map((listing, index) => (
-              <div
-                key={index}
-                className="bg-background p-4 rounded-lg shadow-md"
-              >
-                <img
-                  src={renderImageUrl(listing.image)}
-                  alt={listing.name}
-                  className="w-full h-48 object-cover rounded-t-lg"
-                />
-                <div className="p-4">
-                  <h3 className="text-lg font-bold mb-2">{listing.name}</h3>
-                  <p className="text-muted-foreground mb-4">
-                    {listing.description}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div className="text-primary font-bold">
-                      {listing.price} SOL
-                    </div>
-                    <Button>Buy</Button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>
