@@ -20,6 +20,12 @@ import FilterIcon from "../icons/FilterIcon";
 import SearchIcon from "../icons/SearchIcons";
 import CardComp from "../shared/CardComp";
 import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function AllComponent() {
   const [products, setProducts] = useState([
@@ -134,10 +140,27 @@ export default function AllComponent() {
             >
               <ShoppingCartIcon className="w-6 h-6 text-muted-foreground" />
             </Button>
-            <Avatar className="w-8 h-8 border">
-              <AvatarImage src="/placeholder-user.jpg" alt="User Avatar" />
-              <AvatarFallback>U</AvatarFallback>
-            </Avatar>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className="w-8 h-8 border cursor-pointer hover:bg-gray-400 ">
+                  <AvatarImage src="/placeholder-user.jpg" alt="User Avatar" />
+                  <AvatarFallback>U</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuItem
+                  onSelect={() => console.log("Profile selected")}
+                >
+                  Profile
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onSelect={() => console.log("Logout selected")}
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
