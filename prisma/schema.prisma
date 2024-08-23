@@ -76,15 +76,19 @@ model Cart {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
-
 model CartItem {
-  id        String  @id @default(uuid())
-  cart      Cart    @relation(fields: [cartId], references: [id])
+  id        String   @id @default(uuid())
   cartId    String
-  product   Product @relation(fields: [productId], references: [id])
   productId String
-  quantity  Int     @default(1)
+  quantity  Int
+
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@unique([cartId, productId])  
 }
+
+
 
 model Order {
   id         String     @id @default(uuid())
