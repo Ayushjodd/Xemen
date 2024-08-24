@@ -59,7 +59,7 @@ model Product {
   price       BigInt
   imageUrl    String?
   category    String
-  seller      User       @relation(fields: [sellerId], references: [id])
+  seller      User       @relation(fields: [sellerId], references: [id],onDelete: Cascade)
   sellerId    String
   sellerName  String?
   orderItems  OrderItem[]
@@ -70,7 +70,7 @@ model Product {
 
 model Cart {
   id        String     @id @default(uuid())
-  user      User       @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id],onDelete: Cascade)
   userId    String     @unique
   items     CartItem[]
   createdAt DateTime   @default(now())
@@ -82,8 +82,8 @@ model CartItem {
   productId String
   quantity  Int
 
-  cart      Cart     @relation(fields: [cartId], references: [id])
-  product   Product  @relation(fields: [productId], references: [id])
+  cart      Cart     @relation(fields: [cartId], references: [id],onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id],onDelete: Cascade)
 
   @@unique([cartId, productId])  
 }
@@ -92,7 +92,7 @@ model CartItem {
 
 model Order {
   id         String     @id @default(uuid())
-  user       User       @relation(fields: [userId], references: [id])
+  user       User       @relation(fields: [userId], references: [id],onDelete: Cascade)
   userId     String
   items      OrderItem[]
   totalPrice BigInt
@@ -103,9 +103,9 @@ model Order {
 
 model OrderItem {
   id        String  @id @default(uuid())
-  order     Order   @relation(fields: [orderId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id],onDelete: Cascade)
   orderId   String
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id],onDelete:Cascade )
   productId String
   quantity  Int     @default(1)
 }
