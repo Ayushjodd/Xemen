@@ -27,26 +27,20 @@ const SignInPage: FC = () => {
         </p>
         <div className="space-y-4">
           <button
-            onClick={async () =>
-              await signIn("google", { callbackUrl: "/home" })
-            }
+            onClick={async () => await signIn("google", { callbackUrl: "/" })}
             className="w-full flex items-center justify-center bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200"
           >
             <FcGoogle className="mr-2 text-2xl bg-white rounded-sm " /> Continue
             with Google
           </button>
           <button
-            onClick={async () =>
-              await signIn("github", { callbackUrl: "/home" })
-            }
+            onClick={async () => await signIn("github", { callbackUrl: "/" })}
             className="w-full flex items-center justify-center bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-950 transition duration-200"
           >
             <FaGithub className="mr-2 text-2xl" /> Continue with GitHub
           </button>
           <button
-            onClick={async () =>
-              await signIn("discord", { callbackUrl: "/home" })
-            }
+            onClick={async () => await signIn("discord", { callbackUrl: "/" })}
             className="w-full flex items-center justify-center bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-200"
           >
             <FaDiscord className="mr-2 text-2xl" /> Continue with Discord
