@@ -1,4 +1,4 @@
-/* eslint-disable jsx-a11y/alt-text */
+//comp/home/cardProduct.tsx
 /* eslint-disable @next/next/no-img-element */
 import {
   Breadcrumb,
@@ -8,22 +8,47 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "@/components/ui/carousel";
 import { Button } from "@/components/ui/newButton";
-import Link from "next/link";
-import React from "react";
-import HeartIcon from "../icons/HeartIcon";
-import StarIcon from "../icons/StarIcon";
-import ChevronLeftIcon from "../icons/ChevronLeftIcon";
-import ChevronRightIcon from "../icons/ChevronRightIcon";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 
-export default function CardProduct() {
+interface Product {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  imageUrl: string;
+}
+
+export default function ProductPage() {
+  const [product, setProduct] = useState<Product | null>(null);
+  const { productId } = useParams();
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/product/viewOne/${productId}`
+        );
+        const data = await response.json();
+        if (data.success) {
+          setProduct(data.product);
+        } else {
+          setProduct(null);
+        }
+      } catch (error) {
+        console.error("Error fetching product:", error);
+        setProduct(null);
+      }
+    };
+
+    fetchProduct();
+  }, [productId]);
+
+  if (!product) {
+    return <div>Product not found.</div>;
+  }
+
   return (
     <div className="bg-background">
       <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -38,7 +63,7 @@ export default function CardProduct() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Acme Prism T-Shirt</BreadcrumbPage>
+              <BreadcrumbPage>{product.title}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -46,54 +71,33 @@ export default function CardProduct() {
           <div className="w-full h-[400px] md:h-[600px] overflow-hidden rounded-md">
             <img
               className="object-cover w-full h-full transition-transform duration-300 ease-in-out transform hover:scale-105"
-              src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={product.imageUrl}
+              alt={product.title}
             />
           </div>
-
           <div className="grid gap-6">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold">
-                Acme Prism T-Shirt
+                {product.title}
               </h1>
-              <p className="text-muted-foreground">The Cozy Chromatic Blend</p>
+              <p className="text-muted-foreground">Product Category</p>
             </div>
-            <div className="grid gap-4">
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-0.5">
-                  {[1, 2, 3].map((_, index) => (
-                    <StarIcon key={index} className="w-5 h-5 fill-primary" />
-                  ))}
-                  {[4, 5].map((_, index) => (
-                    <StarIcon
-                      key={index}
-                      className="w-5 h-5 fill-muted stroke-muted-foreground"
-                    />
-                  ))}
-                </div>
-                <span className="text-muted-foreground">(4.3)</span>
-              </div>
-              <div className="text-4xl font-bold flex ">
-                <span>
-                  <img
-                    className="h-10 w-10 mr-1 "
-                    src="https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png"
-                  />
-                </span>
-                <span className="hover:underline">0.4</span>
-              </div>
-              <div className="text-sm leading-loose text-muted-foreground">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat
-                reiciendis dicta sit similique odio vero corrupti fugit. Ad
-                aspernatur suscipit quae molestias, maxime, inventore voluptatem
-                officiis iste voluptate amet esse!
-              </div>
-              <div className="flex gap-2">
-                <Button size="lg">Add to Cart</Button>
-                <Button size="lg" variant="outline">
-                  <HeartIcon className="w-4 h-4 mr-2" />
-                  Add to Wishlist
-                </Button>
-              </div>
+            <div className="text-4xl font-bold flex items-center">
+              <img
+                className="h-10 w-10 mr-1"
+                src="https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png"
+                alt="Solana Logo"
+              />
+              <span>{product.price} SOL</span>
+            </div>
+            <div className="text-sm leading-loose text-muted-foreground">
+              {product.description}
+            </div>
+            <div className="flex gap-2">
+              <Button size="lg">Add to Cart</Button>
+              <Button size="lg" variant="outline">
+                Add to Wishlist
+              </Button>
             </div>
           </div>
         </div>
