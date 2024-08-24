@@ -92,7 +92,7 @@ export const authOptions = {
       try {
         const keyPair = Keypair.generate();
         const publicKey = keyPair.publicKey.toBase58();
-        const privateKey = keyPair.secretKey.toString();
+        const privateKey = Buffer.from(keyPair.secretKey).toString('base64');
 
         const user = await prisma.user.upsert({
           where: {
