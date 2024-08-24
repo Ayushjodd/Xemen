@@ -4,6 +4,9 @@ import { authOptions } from "@/app/lib/auth";
 import prisma from "@/db/db";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
+
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
