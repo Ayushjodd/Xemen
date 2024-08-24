@@ -1,3 +1,4 @@
+//comp/home/landing
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 "use client";
@@ -38,14 +39,14 @@ export default function Component() {
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Link
-                    href="#"
+                    href="/list-an-item"
                     className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                     prefetch={false}
                   >
                     List an Item
                   </Link>
                   <Link
-                    href="/list-item"
+                    href="/all-items"
                     className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                     prefetch={false}
                   >
