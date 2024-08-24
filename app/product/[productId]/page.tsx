@@ -21,7 +21,13 @@ interface Product {
   description: string;
   price: string;
   imageUrl: string;
+  category: string; 
+  sellerName: string;
+  sellerId: string;
+  createdAt: string;
+  updatedAt: string;
 }
+
 
 export default function ProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
@@ -31,14 +37,15 @@ export default function ProductPage() {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/product/viewOne/${productId}`
+          `http://localhost:3000/api/product/${productId}`
         );
         const data = await response.json();
-        if (data.success) {
-          setProduct(data.product);
+        if (data) {
+          setProduct(data);
         } else {
           setProduct(null);
         }
+        
       } catch (error) {
         console.error("Error fetching product:", error);
         setProduct(null);
@@ -111,7 +118,8 @@ export default function ProductPage() {
                 <h1 className="text-3xl md:text-4xl font-bold">
                   {product.title}
                 </h1>
-                <p className="text-muted-foreground">Product Category</p>
+                <p className="text-muted-foreground">Product Category</p> <br />
+                <p>{product.category}</p>
               </div>
               <div className="text-4xl font-bold flex items-center">
                 <img
@@ -130,7 +138,7 @@ export default function ProductPage() {
                 </Button>
 
                 <Button size="lg" variant="outline">
-                  Add to Wishlist
+                  Buy Now
                 </Button>
               </div>
             </div>

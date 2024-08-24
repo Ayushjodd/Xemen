@@ -99,6 +99,17 @@ export default function CartPage() {
     0
   );
 
+  interface CartItem {
+    id: string;
+    product: {
+      id: string;
+      name: string;
+      price: string;
+      imageUrl?: string; 
+    };
+    quantity: number;
+  }
+  
   return (
     <>
       <Toaster />
@@ -130,7 +141,7 @@ export default function CartPage() {
                 className="grid grid-cols-[100px_1fr_100px] items-center gap-4 border rounded-md p-3"
               >
                 <img
-                  src={item.product.imageUrl}
+                  src={item.product?.imageUrl}
                   alt={item.product.name}
                   width={100}
                   height={100}
