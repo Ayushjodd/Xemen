@@ -3,14 +3,31 @@
 "use client"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import MountainIcon from "../icons/Mountain";
+import { signOut, useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
-export default function Appbar () {
-   const router=useRouter();
+export default function Appbar() {
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [user, setUser] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-return <div>
-   <header className="px-4 lg:px-6 h-14 flex items-center border rounded-full">
+  useEffect(() => {
+    if (session?.user) {
+      setUser(true);
+    } else {
+      setUser(false);
+    }
+  }, [session]);
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  return (
+    <div>
+      <header className="px-4 lg:px-6 h-14 flex items-center justify-between border rounded-full">
         <Link
           href="#"
           className="flex items-center justify-center"
@@ -19,43 +36,115 @@ return <div>
           <MountainIcon className="h-6 w-6" />
           <span className="sr-only">Solana Marketplace</span>
         </Link>
-    <nav className="ml-auto flex gap-4 sm:gap-6">
-<div className=" mr-11 mt-2">
-  <Link
-    href="#"
-    className="text-sm font-medium hover:underline underline-offset-4 px-2"
-    prefetch={false}
-  >
-    Features
-  </Link>
-  <Link
-    href="#"
-    className="text-sm font-medium hover:underline underline-offset-4 px-2"
-    prefetch={false}
-  >
-    How It Works
-  </Link>
-  <Link
-    href="#"
-    className="text-sm font-medium hover:underline underline-offset-4 px-2"
-    prefetch={false}
-  >
-    Pricing
-  </Link>
-  <Link
-    href="#"
-    className="text-sm font-medium hover:underline underline-offset-4 px-2"
-    prefetch={false}
-  >
-    Contact
-  </Link>
-</div>
-<button className=" bg-[#141c2e] hover:bg-[#272e3f] text-white rounded-md ml-96 p-2 px-4 " onClick={()=>{
-  router.push("/signin")
-}}>
-  Login
-</button>
-</nav>
-</header>
-</div>
+
+        <nav className="hidden md:flex items-center gap-4 sm:gap-6">
+          <Link
+            href="#"
+            className="text-sm font-medium hover:underline underline-offset-4 px-2"
+            prefetch={false}
+          >
+            Features
+          </Link>
+          <Link
+            href="#"
+            className="text-sm font-medium hover:underline underline-offset-4 px-2"
+            prefetch={false}
+          >
+            How It Works
+          </Link>
+          <Link
+            href="#"
+            className="text-sm font-medium hover:underline underline-offset-4 px-2"
+            prefetch={false}
+          >
+            Pricing
+          </Link>
+          <Link
+            href="#"
+            className="text-sm font-medium hover:underline underline-offset-4 px-2"
+            prefetch={false}
+          >
+            Contact
+          </Link>
+        </nav>
+
+        <div className="flex items-center">
+          {!user ? (
+            <button
+              className="bg-[#141c2e] hover:bg-[#272e3f] text-white rounded-md p-2 px-4"
+              onClick={() => {
+                router.push("/signin");
+              }}
+            >
+              Login
+            </button>
+          ) : (
+            <button
+              className="bg-[#141c2e] hover:bg-[#272e3f] text-white rounded-md p-2 px-4"
+              onClick={async () => {
+                await signOut();
+              }}
+            >
+              Logout
+            </button>
+          )}
+
+          <button
+            className="ml-4 md:hidden text-sm font-medium hover:underline underline-offset-4 px-2"
+            onClick={toggleMenu}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      {menuOpen && (
+        <div className="md:hidden mt-2 bg-white border rounded-lg shadow-lg p-4">
+          <nav className="flex flex-col gap-2">
+            <Link
+              href="#"
+              className="text-sm font-medium hover:underline underline-offset-4 px-4"
+              prefetch={false}
+            >
+              Features
+            </Link>
+            <Link
+              href="#"
+              className="text-sm font-medium hover:underline underline-offset-4 px-4"
+              prefetch={false}
+            >
+              How It Works
+            </Link>
+            <Link
+              href="#"
+              className="text-sm font-medium hover:underline underline-offset-4 px-4"
+              prefetch={false}
+            >
+              Pricing
+            </Link>
+            <Link
+              href="#"
+              className="text-sm font-medium hover:underline underline-offset-4 px-4"
+              prefetch={false}
+            >
+              Contact
+            </Link>
+          </nav>
+        </div>
+      )}
+    </div>
+  );
 }
