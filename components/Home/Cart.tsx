@@ -2,8 +2,9 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/newButton";
+import toast, { Toaster } from "react-hot-toast";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,48 +18,90 @@ import MinusIcon from "../icons/MinusIcon";
 import PlusIcon from "../icons/PlusIcon";
 import TrashIcon from "../icons/TrashIcon";
 
-export default function Component() {
-  const [cart, setCart] = useState([
-    {
-      id: 1,
-      name: "Cozy Blanket",
-      image:
-        "https://images.unsplash.com/photo-1676582846890-16cd2c0b7584?q=80&w=1972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      price: 29.99,
-      quantity: 2,
-    },
-    {
-      id: 2,
-      name: "Autumn Mug",
-      image:
-        "https://plus.unsplash.com/premium_photo-1673422506808-ad558246598a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      price: 12.99,
-      quantity: 1,
-    },
-    {
-      id: 3,
-      name: "Fall Fragrance Candle",
-      image:
-        "https://plus.unsplash.com/premium_photo-1666632470596-d5d237620996?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      price: 16.99,
-      quantity: 1,
-    },
-  ]);
+interface CartItem {
+  id: string;
+  product: {
+    id: string;
+    name: string;
+    price: string;
+  };
+  quantity: number;
+}
+
+export default function CartPage() {
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [showSolanaModal, setShowSolanaModal] = useState(false);
-  const handleRemoveFromCart = (id: number) => {
-    setCart(cart.filter((item) => item.id !== id));
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const response = await fetch("/api/cart/view");
+        const data = await response.json();
+
+        if (data.success) {
+          setCart(data.cart.items);
+        } else {
+          toast.error(data.message || "Failed to load cart");
+        }
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+        toast.error("Failed to load cart");
+      }
+    };
+
+    fetchCart();
+  }, []);
+
+  const handleRemoveFromCart = async (id: string) => {
+    try {
+      const response = await fetch(`/api/cart/remove/${id}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setCart(cart.filter((item) => item.id !== id));
+        toast.success("Item removed from cart");
+      } else {
+        toast.error("Failed to remove item from cart");
+      }
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+      toast.error("Failed to remove item from cart");
+    }
   };
-  const handleQuantityChange = (id: number, quantity: number) => {
-    setCart(
-      cart.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
+
+  const handleQuantityChange = async (id: string, quantity: number) => {
+    try {
+      const response = await fetch(`/api/cart/update/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setCart(
+          cart.map((item) => (item.id === id ? { ...item, quantity } : item))
+        );
+        toast.success("Quantity updated");
+      } else {
+        toast.error("Failed to update quantity");
+      }
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+      toast.error("Failed to update quantity");
+    }
   };
+
   const totalAmount = cart.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+    (acc, item) => acc + parseFloat(item.product.price) * item.quantity,
     0
   );
+
   return (
     <>
+      <Toaster />
       <div className="container mx-auto px-4 md:px-6 py-12">
         <div className="mb-8 ">
           <Breadcrumb>
@@ -87,22 +130,22 @@ export default function Component() {
                 className="grid grid-cols-[100px_1fr_100px] items-center gap-4 border rounded-md p-3"
               >
                 <img
-                  src={item.image}
-                  alt={item.name}
+                  src={item.product.imageUrl}
+                  alt={item.product.name}
                   width={100}
                   height={100}
                   className="rounded-md object-cover"
                   style={{ aspectRatio: "100/100", objectFit: "cover" }}
                 />
                 <div className="grid gap-1">
-                  <h3 className="font-medium">{item.name}</h3>
+                  <h3 className="font-medium">{item.product.name}</h3>
                   <p className="text-muted-foreground text-sm flex">
                     <img
                       src="https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png"
                       className="h-5 w-5 mr-1"
                       alt="img"
                     />
-                    {item.price.toFixed(2)}
+                    {item.product.price}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
