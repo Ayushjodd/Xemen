@@ -1,10 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/lib/auth';
-import prisma from '@/db/db';
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
-
-export const dynamic = 'force-dynamic';
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/lib/auth";
+import prisma from "@/db/db";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 export async function GET(req: NextRequest) {
   try {
@@ -12,7 +10,7 @@ export async function GET(req: NextRequest) {
 
     if (!session) {
       return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
+        { success: false, message: "Unauthorized" },
         { status: 401 }
       );
     }
@@ -22,13 +20,13 @@ export async function GET(req: NextRequest) {
     const cart = await prisma.cart.findUnique({
       where: { userId },
       include: {
-        items: true, 
+        items: true,
       },
     });
 
     if (!cart) {
       return NextResponse.json(
-        { success: false, message: 'Cart not found' },
+        { success: false, message: "Cart not found" },
         { status: 404 }
       );
     }
@@ -41,9 +39,16 @@ export async function GET(req: NextRequest) {
 
         return {
           ...item,
-          product: product ? { id: product.id, name: product.title,  price: (
-            Number(product.price) / Number(BigInt(LAMPORTS_PER_SOL))
-          ).toFixed(2), } : null,
+          product: product
+            ? {
+                imageUrl: product.imageUrl,
+                id: product.id,
+                name: product.title,
+                price: (
+                  Number(product.price) / Number(BigInt(LAMPORTS_PER_SOL))
+                ).toFixed(2),
+              }
+            : null,
         };
       })
     );
@@ -56,9 +61,9 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error retrieving cart:', error);
+    console.error("Error retrieving cart:", error);
     return NextResponse.json(
-      { success: false, message: 'Failed to retrieve cart' },
+      { success: false, message: "Failed to retrieve cart" },
       { status: 500 }
     );
   }
