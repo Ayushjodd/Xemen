@@ -1,5 +1,3 @@
-//app/product/[productId]/page.tsx
-
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useEffect, useState } from "react";
@@ -14,6 +12,7 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
+import Loader from "@/components/Home/Loader";
 
 interface Product {
   id: string;
@@ -21,17 +20,17 @@ interface Product {
   description: string;
   price: string;
   imageUrl: string;
-  category: string; 
+  category: string;
   sellerName: string;
   sellerId: string;
   createdAt: string;
   updatedAt: string;
 }
 
-
 export default function ProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const { productId } = useParams();
+  const [loading, setLoading] = useState<Boolean>(true);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -42,10 +41,10 @@ export default function ProductPage() {
         const data = await response.json();
         if (data) {
           setProduct(data);
+          setLoading(false);
         } else {
           setProduct(null);
         }
-        
       } catch (error) {
         console.error("Error fetching product:", error);
         setProduct(null);
@@ -81,8 +80,18 @@ export default function ProductPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader />
+      </div>
+    );
+  }
+
   if (!product) {
-    return <div>Product not found.</div>;
+    return (
+      <div>Please wait while we are fetching the details of the product</div>
+    );
   }
 
   return (
