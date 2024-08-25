@@ -98,19 +98,28 @@ export default function ProductPage() {
     <>
       <Toaster />
       <div className="bg-background">
-        <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
+        <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 ">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                <BreadcrumbLink className="font-semibold text-lg" href="/">
+                  Home
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/list-item">Products</BreadcrumbLink>
+                <BreadcrumbLink
+                  className="font-semibold text-lg"
+                  href="/all-items"
+                >
+                  Products
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>{product.title}</BreadcrumbPage>
+                <BreadcrumbPage className="font-semibold text-lg">
+                  {product.title}
+                </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
