@@ -53,7 +53,6 @@ export default function CartPage() {
   }, []);
 
   const handleRemoveFromCart = async (id: string) => {
-    console.log(id);
     try {
       const response = await fetch(`/api/cart/remove/${id}`, {
         method: "DELETE",
