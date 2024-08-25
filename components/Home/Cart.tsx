@@ -5,6 +5,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "../ui/newButton";
 import toast, { Toaster } from "react-hot-toast";
+import { RxUpdate } from "react-icons/rx";
+import { GoArrowRight } from "react-icons/go";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,8 +19,10 @@ import {
 import MinusIcon from "../icons/MinusIcon";
 import PlusIcon from "../icons/PlusIcon";
 import TrashIcon from "../icons/TrashIcon";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
+  const router = useRouter();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showSolanaModal, setShowSolanaModal] = useState(false);
 
@@ -50,7 +54,10 @@ export default function CartPage() {
       const data = await response.json();
 
       if (data.success) {
-        setCart(cart.filter((item) => item.id !== id));
+        // Update the frontend state to remove the item
+        setCart((prevCart) =>
+          prevCart.filter((item) => item.product?.id !== id)
+        );
         toast.success("Item removed from cart");
       } else {
         toast.error("Failed to remove item from cart");
@@ -109,31 +116,44 @@ export default function CartPage() {
     <>
       <Toaster />
       <div className="container mx-auto px-4 md:px-6 py-12">
-        <div className="mb-8">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink className="font-semibold text-xl" href="/">
-                  Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  className="font-semibold text-xl"
-                  href="/all-items"
-                >
-                  All Items
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage className="font-semibold text-xl">
-                  Your Cart
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+        <div className="justify-between flex">
+          <div className="mb-8">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink className="font-semibold text-xl" href="/">
+                    Home
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink
+                    className="font-semibold text-xl"
+                    href="/all-items"
+                  >
+                    All Items
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="font-semibold text-xl">
+                    Your Cart
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+          <div>
+            <Button
+              onClick={() => router.push("/all-items")}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Browse more products{" "}
+              <span className="text-xl pl-1">
+                <GoArrowRight />
+              </span>
+            </Button>
+          </div>
         </div>
         <div className="grid gap-8">
           <div className="grid gap-6">
@@ -145,8 +165,8 @@ export default function CartPage() {
                 <img
                   src={item.product?.imageUrl}
                   alt={item.product.name}
-                  width={100}
-                  height={100}
+                  width={125}
+                  height={125}
                   className="rounded-md object-cover"
                   style={{ aspectRatio: "100/100", objectFit: "cover" }}
                 />
@@ -162,14 +182,17 @@ export default function CartPage() {
                   </p>
                 </div>
                 <div className="flex flex-col items-start gap-2">
-                  <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center gap-2 mb-2 ml-4">
                     <Button
                       variant="outline"
                       size="icon"
                       onClick={() =>
-                        handleQuantityChange(item.id, Math.max(item.quantity - 1, 1))
+                        handleQuantityChange(
+                          item.id,
+                          Math.max(item.quantity - 1, 1)
+                        )
                       }
-                      className="p-2"
+                      className="p-2 rounded-full"
                     >
                       <MinusIcon className="h-4 w-4" />
                     </Button>
@@ -180,26 +203,32 @@ export default function CartPage() {
                       onClick={() =>
                         handleQuantityChange(item.id, item.quantity + 1)
                       }
-                      className="p-2"
+                      className="p-2 rounded-full"
                     >
-                      <PlusIcon className="h-4 w-4" />
+                      <PlusIcon className="h-4 w-4 " />
                     </Button>
                   </div>
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => updateQuantityInDB(item.product?.id, item.quantity)}
-                    className="w-full md:w-auto"
+                    onClick={() =>
+                      updateQuantityInDB(item.product?.id, item.quantity)
+                    }
+                    className="w-full md:w-auto p-2"
                   >
-                    Update Quantity
+                    Update Quantity{" "}
+                    <span className="text-lg ml-1">
+                      <RxUpdate />
+                    </span>
                   </Button>
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={() => handleRemoveFromCart(item.product?.id)}
-                    className="mt-2 w-full md:w-auto"
+                    className="mt-2 w-full md:w-auto px-5 bg-red-500 text-white hover:bg-red-600 hover:text-white"
                   >
-                    <TrashIcon className="h-4 w-4" />
+                    Remove Item
+                    <TrashIcon className="h-4 w-4 ml-1" />
                   </Button>
                 </div>
               </div>
