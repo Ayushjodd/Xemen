@@ -53,6 +53,7 @@ export default function CartPage() {
   }, []);
 
   const handleRemoveFromCart = async (id: string) => {
+    console.log(id);
     try {
       const response = await fetch(`/api/cart/remove/${id}`, {
         method: "DELETE",
@@ -105,11 +106,11 @@ export default function CartPage() {
       id: string;
       name: string;
       price: string;
-      imageUrl?: string; 
+      imageUrl?: string;
     };
     quantity: number;
   }
-  
+
   return (
     <>
       <Toaster />
@@ -118,15 +119,22 @@ export default function CartPage() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                <BreadcrumbLink className="font-semibold text-xl" href="/">
+                  Home
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/list-item">All Items</BreadcrumbLink>
+                <BreadcrumbLink
+                  className="font-semibold text-xl"
+                  href="/all-items"
+                >
+                  All Items
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage className="font-semibold">
+                <BreadcrumbPage className="font-semibold text-xl">
                   Your Cart
                 </BreadcrumbPage>
               </BreadcrumbItem>
