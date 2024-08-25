@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import MountainIcon from "../icons/Mountain";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { MdLogout } from "react-icons/md";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -96,8 +97,11 @@ export default function Appbar() {
           ) : (
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <button className="bg-[#141c2e] hover:bg-[#272e3f] text-white rounded-md p-2 px-4">
-                  Logout
+                <button className="flex bg-[#141c2e] hover:bg-[#272e3f] text-white rounded-md p-2 px-4">
+                  Logout{" "}
+                  <span className="text-2xl pl-1 text-red-500">
+                    <MdLogout />
+                  </span>
                 </button>
               </AlertDialogTrigger>
               <AlertDialogContent>
