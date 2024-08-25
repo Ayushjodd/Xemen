@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/newButton";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -13,6 +13,7 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 import Loader from "@/components/Home/Loader";
+import { FaShoppingCart } from "react-icons/fa";
 
 interface Product {
   id: string;
@@ -28,10 +29,11 @@ interface Product {
 }
 
 export default function ProductPage() {
+  const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const { productId } = useParams();
   const [loading, setLoading] = useState<Boolean>(true);
- const [addCart,setAddCart] = useState(false);
+  const [addCart, setAddCart] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -81,7 +83,6 @@ export default function ProductPage() {
       toast.error("Failed to add item to cart");
     }
   };
-
 
   const handleRemoveFromCart = async () => {
     try {
@@ -167,6 +168,15 @@ export default function ProductPage() {
                 </h1>
                 <p className="text-muted-foreground">Product Category</p> <br />
                 <p>{product.category}</p>
+                <Button
+                  className="mt-2 bg-green-600 hover:bg-green-700 "
+                  onClick={() => router.push("/cart")}
+                >
+                  Go to Cart
+                  <span className=" text-lg pl-1">
+                    <FaShoppingCart />
+                  </span>
+                </Button>
               </div>
               <div className="text-4xl font-bold flex items-center">
                 <img
@@ -180,15 +190,15 @@ export default function ProductPage() {
                 {product.description}
               </div>
               <div className="flex gap-2">
-                {!addCart?
-                <Button size="lg" className="" onClick={handleAddToCart}>
-                  Add to Cart
-                </Button>
-                :
-                <Button size="lg" className="" onClick={handleRemoveFromCart}>
-                Remove from Cart
-              </Button>
-}
+                {!addCart ? (
+                  <Button size="lg" className="" onClick={handleAddToCart}>
+                    Add to Cart
+                  </Button>
+                ) : (
+                  <Button size="lg" className="" onClick={handleRemoveFromCart}>
+                    Remove from Cart
+                  </Button>
+                )}
                 <Button size="lg" variant="outline">
                   Buy Now
                 </Button>
