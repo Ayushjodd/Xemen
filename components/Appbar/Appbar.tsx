@@ -6,6 +6,17 @@ import { useRouter } from "next/navigation";
 import MountainIcon from "../icons/Mountain";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "../ui/alert-dialog";
 
 export default function Appbar() {
   const router = useRouter();
@@ -23,6 +34,10 @@ export default function Appbar() {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const handleLogout = async () => {
+    await signOut();
   };
 
   return (
@@ -79,14 +94,27 @@ export default function Appbar() {
               Login
             </button>
           ) : (
-            <button
-              className="bg-[#141c2e] hover:bg-[#272e3f] text-white rounded-md p-2 px-4"
-              onClick={async () => {
-                await signOut();
-              }}
-            >
-              Logout
-            </button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button className="bg-[#141c2e] hover:bg-[#272e3f] text-white rounded-md p-2 px-4">
+                  Logout
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to log out?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleLogout}>
+                    Logout
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
 
           <button
