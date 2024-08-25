@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-"use client"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+"use client";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import MountainIcon from "../icons/Mountain";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";

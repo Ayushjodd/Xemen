@@ -1,4 +1,3 @@
-//component/home/allitems.tsx
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable jsx-a11y/alt-text */
 "use client";
@@ -27,7 +26,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Loader from "./Loader";
+import { SkeletonCard } from "./Loader";
 
 interface Product {
   id: number;
@@ -51,6 +50,7 @@ export default function AllItems() {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
       try {
         const res = await fetch("/api/product/get-all");
         const data = await res.json();
@@ -78,10 +78,6 @@ export default function AllItems() {
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
-
-  if (loading) {
-    return <Loader />;
-  }
 
   return (
     <div className="bg-muted/40 min-h-screen">
@@ -150,16 +146,21 @@ export default function AllItems() {
       </header>
       <main className="container mx-auto px-4 md:px-6 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {currentItems.map((product) => (
-            <CardComp
-              productId={product.id.toString()}
-              key={product.id}
-              url={product.imageUrl}
-              title={product.title}
-              description={product.description}
-              price={product.price}
-            />
-          ))}
+          {loading
+            ? // Show skeleton loaders if loading
+              Array.from({ length: 8 }).map((_, index) => (
+                <SkeletonCard key={index} />
+              ))
+            : currentItems.map((product) => (
+                <CardComp
+                  productId={product.id.toString()}
+                  key={product.id}
+                  url={product.imageUrl}
+                  title={product.title}
+                  description={product.description}
+                  price={product.price}
+                />
+              ))}
         </div>
         <div className="flex justify-center mt-8">
           <Pagination>
