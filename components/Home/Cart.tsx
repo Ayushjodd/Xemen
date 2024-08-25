@@ -18,16 +18,6 @@ import MinusIcon from "../icons/MinusIcon";
 import PlusIcon from "../icons/PlusIcon";
 import TrashIcon from "../icons/TrashIcon";
 
-interface CartItem {
-  id: string;
-  product: {
-    id: string;
-    name: string;
-    price: string;
-  };
-  quantity: number;
-}
-
 export default function CartPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showSolanaModal, setShowSolanaModal] = useState(false);
@@ -71,19 +61,24 @@ export default function CartPage() {
     }
   };
 
-  const handleQuantityChange = async (id: string, quantity: number) => {
+  const handleQuantityChange = (id: string, newQuantity: number) => {
+    setCart(
+      cart.map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  const updateQuantityInDB = async (id: string, quantity: number) => {
     try {
-      const response = await fetch(`/api/cart/update/${id}`, {
-        method: "PATCH",
+      const response = await fetch(`/api/cart/add/${id}`, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ quantity }),
       });
       const data = await response.json();
 
       if (data.success) {
-        setCart(
-          cart.map((item) => (item.id === id ? { ...item, quantity } : item))
-        );
         toast.success("Quantity updated");
       } else {
         toast.error("Failed to update quantity");
@@ -114,7 +109,7 @@ export default function CartPage() {
     <>
       <Toaster />
       <div className="container mx-auto px-4 md:px-6 py-12">
-        <div className="mb-8 ">
+        <div className="mb-8">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -145,7 +140,7 @@ export default function CartPage() {
             {cart.map((item) => (
               <div
                 key={item.id}
-                className="grid grid-cols-[100px_1fr_100px] items-center gap-4 border rounded-md p-3"
+                className="grid grid-cols-1 md:grid-cols-[100px_1fr_150px] items-center gap-4 border rounded-md p-3"
               >
                 <img
                   src={item.product?.imageUrl}
@@ -156,8 +151,8 @@ export default function CartPage() {
                   style={{ aspectRatio: "100/100", objectFit: "cover" }}
                 />
                 <div className="grid gap-1">
-                  <h3 className="font-medium">{item.product.name}</h3>
-                  <p className="text-muted-foreground text-sm flex">
+                  <h3 className="font-medium text-lg">{item.product.name}</h3>
+                  <p className="text-muted-foreground text-sm flex items-center">
                     <img
                       src="https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png"
                       className="h-5 w-5 mr-1"
@@ -166,31 +161,43 @@ export default function CartPage() {
                     {item.product.price}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col items-start gap-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        handleQuantityChange(item.id, Math.max(item.quantity - 1, 1))
+                      }
+                      className="p-2"
+                    >
+                      <MinusIcon className="h-4 w-4" />
+                    </Button>
+                    <span className="font-medium">{item.quantity}</span>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        handleQuantityChange(item.id, item.quantity + 1)
+                      }
+                      className="p-2"
+                    >
+                      <PlusIcon className="h-4 w-4" />
+                    </Button>
+                  </div>
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() =>
-                      handleQuantityChange(item.id, item.quantity - 1)
-                    }
-                    disabled={item.quantity === 1}
+                    onClick={() => updateQuantityInDB(item.product?.id, item.quantity)}
+                    className="w-full md:w-auto"
                   >
-                    <MinusIcon className="h-4 w-4" />
-                  </Button>
-                  <span className="font-medium">{item.quantity}</span>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() =>
-                      handleQuantityChange(item.id, item.quantity + 1)
-                    }
-                  >
-                    <PlusIcon className="h-4 w-4" />
+                    Update Quantity
                   </Button>
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => handleRemoveFromCart(item.id)}
+                    onClick={() => handleRemoveFromCart(item.product?.id)}
+                    className="mt-2 w-full md:w-auto"
                   >
                     <TrashIcon className="h-4 w-4" />
                   </Button>
@@ -199,9 +206,9 @@ export default function CartPage() {
             ))}
           </div>
           <div className="grid gap-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-medium">Total</h3>
-              <span className="font-medium flex ">
+            <div className="flex flex-col md:flex-row items-center justify-between">
+              <h3 className="font-medium text-lg">Total</h3>
+              <span className="font-medium flex items-center">
                 <img
                   src="https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png"
                   className="h-6 w-6 mr-1"

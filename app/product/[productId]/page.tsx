@@ -31,6 +31,7 @@ export default function ProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const { productId } = useParams();
   const [loading, setLoading] = useState<Boolean>(true);
+ const [addCart,setAddCart] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -71,12 +72,40 @@ export default function ProductPage() {
 
       if (data.success) {
         toast.success("Item added to cart");
+        setAddCart(true);
       } else {
         toast.error("Failed to add item to cart");
       }
     } catch (error) {
       console.error("Error adding item to cart:", error);
       toast.error("Failed to add item to cart");
+    }
+  };
+
+
+  const handleRemoveFromCart = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/cart/remove/${productId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success("Item Removed from cart");
+        setAddCart(false);
+      } else {
+        toast.error("Failed to remove item from cart");
+      }
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+      toast.error("Failed to remove item from cart");
     }
   };
 
@@ -151,10 +180,15 @@ export default function ProductPage() {
                 {product.description}
               </div>
               <div className="flex gap-2">
+                {!addCart?
                 <Button size="lg" className="" onClick={handleAddToCart}>
                   Add to Cart
                 </Button>
-
+                :
+                <Button size="lg" className="" onClick={handleRemoveFromCart}>
+                Remove from Cart
+              </Button>
+}
                 <Button size="lg" variant="outline">
                   Buy Now
                 </Button>
