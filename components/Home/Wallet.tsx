@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/newButton";
 import { FiEye, FiEyeOff, FiCopy } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
+import Appbar from "../Appbar/Appbar";
 
 interface Wallet {
   id: string;
@@ -65,7 +66,11 @@ export default function Wallet() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
+    <div>
+      <div className="mt-10 mx-6">
+      <Appbar/>
+      </div>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 md:p-8">
       <div className="bg-card rounded-lg shadow-lg p-6 flex flex-col gap-6 max-w-md w-full border relative">
         <div>
           <h2 className="text-2xl font-bold">Your Wallet</h2>
@@ -151,6 +156,7 @@ export default function Wallet() {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }
