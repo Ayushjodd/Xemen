@@ -96,9 +96,16 @@ model Order {
   userId     String
   items      OrderItem[]
   totalPrice BigInt
-  status     String
+  Orderstatus     Status
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
+}
+
+enum Status {
+  Pending
+  Delievered
+  Refunded
+  Cancelled
 }
 
 model OrderItem {
