@@ -18,6 +18,10 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "../ui/alert-dialog";
+import { FaWallet } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
+import { FaHeadphonesAlt } from "react-icons/fa";
+import { BsBox } from "react-icons/bs";
 
 export default function Appbar() {
   const router = useRouter();
@@ -43,7 +47,7 @@ export default function Appbar() {
 
   return (
     <div>
-      <header className="px-4 lg:px-6 h-14 flex items-center justify-between border rounded-full">
+      <header className="px-2 lg:px-4 h-14 flex items-center justify-between border rounded-full">
         <Link
           href="#"
           className="flex items-center justify-center"
@@ -53,34 +57,42 @@ export default function Appbar() {
           <span className="sr-only">Solana Marketplace</span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-4 sm:gap-6">
+        <nav className="hidden sm:flex items-center gap-4 sm:gap-6">
           <Link
             href="#"
             className="text-sm font-medium hover:underline underline-offset-4 px-2"
             prefetch={false}
           >
-            Features
+              <div className="pr-2 lg:pr-4 flex items-center">
+              <BsBox /> <span className="pl-2">Orders</span>
+            </div>
+          </Link>
+          <Link
+            href="/wallet"
+            className="text-sm font-medium hover:underline underline-offset-4 px-2"
+            prefetch={false}
+          >
+            <div className="pr-2 lg:pr-4 flex items-center">
+              <FaWallet /> <span className="pl-2">Wallet</span>
+            </div>
+          </Link>
+          <Link
+            href="/cart"
+            className="text-sm font-medium hover:underline underline-offset-4 px-2"
+            prefetch={false}
+          >
+             <div className="pr-2 lg:pr-4 flex items-center">
+             <FaShoppingCart /> <span className="pl-2">Cart</span>
+             </div>
           </Link>
           <Link
             href="#"
             className="text-sm font-medium hover:underline underline-offset-4 px-2"
             prefetch={false}
           >
-            How It Works
-          </Link>
-          <Link
-            href="#"
-            className="text-sm font-medium hover:underline underline-offset-4 px-2"
-            prefetch={false}
-          >
-            Pricing
-          </Link>
-          <Link
-            href="#"
-            className="text-sm font-medium hover:underline underline-offset-4 px-2"
-            prefetch={false}
-          >
-            Contact
+            <div className="pr-2 lg:pr-4 flex items-center">
+             <FaHeadphonesAlt /> <span className="pl-2">Contact Us</span>
+             </div>
           </Link>
         </nav>
 
@@ -122,7 +134,7 @@ export default function Appbar() {
           )}
 
           <button
-            className="ml-4 md:hidden text-sm font-medium hover:underline underline-offset-4 px-2"
+            className="ml-4 sm:hidden text-sm font-medium hover:underline underline-offset-4 px-2"
             onClick={toggleMenu}
           >
             <svg
@@ -144,35 +156,43 @@ export default function Appbar() {
       </header>
 
       {menuOpen && (
-        <div className="md:hidden mt-2 bg-white border rounded-lg shadow-lg p-4">
+        <div className="sm:hidden mt-2 bg-white border rounded-lg shadow-lg p-4">
           <nav className="flex flex-col gap-2">
             <Link
               href="#"
               className="text-sm font-medium hover:underline underline-offset-4 px-4"
               prefetch={false}
             >
-              Features
+                <span className="flex items-center">
+              Orders <span className="px-2"><BsBox/></span>
+              </span>
+            </Link>
+            <Link
+              href="/wallet"
+              className="text-sm font-medium hover:underline underline-offset-4 px-4"
+              prefetch={false}
+            >
+              <span className="flex items-center">
+              Wallet <span className="px-2"><FaWallet /></span>
+              </span>
+            </Link>
+            <Link
+              href="/cart"
+              className="text-sm font-medium hover:underline underline-offset-4 px-4"
+              prefetch={false}
+            >
+        <span className="flex items-center">
+              Cart <span className="px-2"><FaShoppingCart /></span>
+              </span>
             </Link>
             <Link
               href="#"
               className="text-sm font-medium hover:underline underline-offset-4 px-4"
               prefetch={false}
             >
-              How It Works
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium hover:underline underline-offset-4 px-4"
-              prefetch={false}
-            >
-              Pricing
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium hover:underline underline-offset-4 px-4"
-              prefetch={false}
-            >
-              Contact
+                 <span className="flex items-center">
+              Contact Us <span className="px-2"><FaHeadphonesAlt /></span>
+              </span>
             </Link>
           </nav>
         </div>
