@@ -169,7 +169,7 @@ export default function ProductPage() {
                 <p className="text-muted-foreground">Product Category</p> <br />
                 <p>{product.category}</p>
                 <Button
-                  className="mt-2 bg-green-600 hover:bg-green-700 "
+                  className="mt-2 bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
                   onClick={() => router.push("/cart")}
                 >
                   Go to Cart

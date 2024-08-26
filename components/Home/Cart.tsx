@@ -146,10 +146,10 @@ export default function CartPage() {
           <div>
             <Button
               onClick={() => router.push("/all-items")}
-              className="bg-blue-600 hover:bg-blue-700"
+              className=" bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
             >
               Browse more products{" "}
-              <span className="text-xl pl-1">
+              <span className="text-xl pl-1 ">
                 <GoArrowRight />
               </span>
             </Button>

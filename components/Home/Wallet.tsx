@@ -32,7 +32,7 @@ export default function Wallet() {
               </code>
               <Button variant="ghost" size="icon">
                 <CopyIcon className="w-5 h-5" />
-                <span className="sr-only">Copy private key</span>
+                <span className="sr-only ">Copy private key</span>
               </Button>
             </div>
           </div>
