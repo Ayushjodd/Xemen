@@ -11,43 +11,66 @@ export async function GET() {
         const session = await getServerSession(authOptions);
         if(!session){
             return NextResponse.json(
-                {success:false,message:"Unauthorized"},
-                {status:401}
-            )
+                { success: false, message: "Unauthorized" },
+                { status: 401 }
+            );
         }
 
-        const userId=session.user.uid;
+        const userId = session.user.uid;
 
         const sollWallet = await prisma.solWallet.findUnique({
-            where:{
-                userId:userId
-            }
-        })
+            where: {
+                userId: userId,
+            },
+        });
 
-        if(!sollWallet){
+        if (!sollWallet) {
             return NextResponse.json(
-                {success:false,message:"Wallet not found!"},
-                {status:404}
-            )
+                { success: false, message: "Wallet not found!" },
+                { status: 404 }
+            );
         }
 
+        
+        const balanceResponse = await fetch("https://api.devnet.solana.com", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                jsonrpc: "2.0",
+                id: 1,
+                method: "getBalance",
+                params: [sollWallet.publicKey],
+            }),
+        });
+
+        const balanceData = await balanceResponse.json();
+
+        if (!balanceData.result) {
+            return NextResponse.json(
+                { success: false, message: "Failed to fetch balance" },
+                { status: 500 }
+            );
+        }
+
+        const balanceLamports = balanceData.result.value;
+
         return NextResponse.json({
-            status:true,
-            id:sollWallet.id,
-            publicKey:sollWallet.publicKey,
-            privateKey:sollWallet.privateKey,
-            balance: (
-                Number(sollWallet.balance) / Number(BigInt(LAMPORTS_PER_SOL))
-              ).toFixed(2),
-            userId:sollWallet.userId
+            status: true,
+            id: sollWallet.id,
+            publicKey: sollWallet.publicKey,
+            privateKey: sollWallet.privateKey,
+            balance: (balanceLamports / LAMPORTS_PER_SOL).toFixed(2), // Convert Lamports to SOL
+            userId: sollWallet.userId,
         },{
-            status:200
-        })
+            status: 200
+        });
     } catch (error) {
-        console.log(error);
+        console.error("Error fetching wallet details:", error);
         return NextResponse.json(
-            {success:false,message:"Error! Cannot fetch Wallet details"},
-            {status:500}
-        )
+            { success: false, message: "Error! Cannot fetch Wallet details" },
+            { status: 500 }
+        );
     }
 }

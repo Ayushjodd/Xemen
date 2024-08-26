@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SkeletonCard } from "./Loader";
+import { signOut, useSession } from "next-auth/react";
 
 interface Product {
   id: number;
@@ -47,6 +48,17 @@ export default function AllItems() {
   const [itemsPerPage] = useState<number>(8);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+  const [user,setUser] = useState(false);
+  const session = useSession();
+
+  useEffect(()=>{
+    if(session.data?.user){
+      setUser(true);
+    }
+    else{
+      setUser(false);
+    }
+  },[session]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -125,6 +137,8 @@ export default function AllItems() {
                   <AvatarFallback>U</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
+              {
+                user?
               <DropdownMenuContent className="w-56">
                 <DropdownMenuItem
                   onSelect={() => console.log("Profile selected")}
@@ -132,14 +146,36 @@ export default function AllItems() {
                   Profile
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onSelect={() => console.log("Logout selected")}
+                  onSelect={async() => 
+                    await signOut()
+                  }
                 >
                   Logout
                 </DropdownMenuItem>
                 <DropdownMenuItem onSelect={() => router.push("/list-an-item")}>
                   List Item
                 </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => router.push("/wallet")}>
+                  Wallet
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => router.push("/")}>
+                  Home
+                </DropdownMenuItem>
               </DropdownMenuContent>
+              :
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuItem
+                  onSelect={() => 
+                    router.push("/signin")
+                  }
+                >
+                  Login
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => router.push("/")}>
+                  Home
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+}
             </DropdownMenu>
           </div>
         </div>
