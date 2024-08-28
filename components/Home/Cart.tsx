@@ -247,7 +247,11 @@ export default function CartPage() {
             <Button
               className="bg-green-600 hover:bg-green-700 transition-all text-lg"
               size="lg"
-              onClick={() => setShowSolanaModal(true)}
+              onClick={() => {
+                setShowSolanaModal(true)
+                alert("Will implement in future")
+              }
+            }
             >
               Pay via Solana
             </Button>

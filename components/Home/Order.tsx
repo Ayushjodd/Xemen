@@ -1,315 +1,281 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @next/next/no-img-element */
 "use client";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Appbar from "../Appbar/Appbar";
+import Loader from "./Loader";
+import toast, { Toaster } from "react-hot-toast";
 
-import { useState, useMemo } from "react";
-import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "../ui/newButton";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 
-// Define types for the component's state and data structure
 interface OrderItem {
-  name: string;
   quantity: number;
-  price: number;
+  productTitle: string;
+  productDescription: string;
+  productImage: string;
+  productCategory: string;
+  productPrice: string;
 }
 
 interface Order {
   id: string;
-  date: string;
-  items: OrderItem[];
-  total: number;
-  status: string;
+  userId: string;
+  totalPrice: string; 
+  orderStatus: Status; 
+  createdAt: string;
+  updatedAt: string;
+  quantity: OrderItem[]; 
 }
 
-interface Filters {
-  status: string[];
-  date: {
-    from: string | null;
-    to: string | null;
-  };
-  product: string;
+enum Status {
+  Pending = "Pending",
+  Delivered = "Delievered",
+  Refunded = "Refunded",
+  Cancelled = "Cancelled",
 }
 
-export default function Component() {
-  const [search, setSearch] = useState<string>("");
-  const [filters, setFilters] = useState<Filters>({
-    status: [],
-    date: {
-      from: null,
-      to: null,
-    },
-    product: "",
-  });
+interface GetAllOrdersResponse {
+  success: boolean;
+  orders: Order[];
+}
 
-  const orders: Order[] = [
-    {
-      id: "ORD001",
-      date: "2023-05-12",
-      items: [
-        {
-          name: "Wireless Headphones",
-          quantity: 1,
-          price: 49.99,
-        },
-        {
-          name: "Laptop Backpack",
-          quantity: 1,
-          price: 29.99,
-        },
-      ],
-      total: 79.98,
-      status: "Delivered",
-    },
-    {
-      id: "ORD002",
-      date: "2023-04-28",
-      items: [
-        {
-          name: "Fitness Tracker",
-          quantity: 1,
-          price: 59.99,
-        },
-      ],
-      total: 59.99,
-      status: "Shipped",
-    },
-    {
-      id: "ORD003",
-      date: "2023-03-15",
-      items: [
-        {
-          name: "Gaming Mouse",
-          quantity: 1,
-          price: 39.99,
-        },
-        {
-          name: "Mechanical Keyboard",
-          quantity: 1,
-          price: 79.99,
-        },
-      ],
-      total: 119.98,
-      status: "Cancelled",
-    },
-    {
-      id: "ORD004",
-      date: "2023-02-22",
-      items: [
-        {
-          name: "Smartwatch",
-          quantity: 1,
-          price: 99.99,
-        },
-      ],
-      total: 99.99,
-      status: "Delivered",
-    },
-    {
-      id: "ORD005",
-      date: "2023-01-10",
-      items: [
-        {
-          name: "DSLR Camera",
-          quantity: 1,
-          price: 499.99,
-        },
-      ],
-      total: 499.99,
-      status: "Shipped",
-    },
-  ];
+interface FilterOrdersResponse {
+  success: boolean;
+  orders: Order[];
+}
 
-  const filteredOrders = useMemo(() => {
-    return orders.filter((order) => {
-      if (filters.status.length > 0 && !filters.status.includes(order.status)) {
-        return false;
-      }
-      if (
-        filters.date.from &&
-        new Date(order.date) < new Date(filters.date.from)
-      ) {
-        return false;
-      }
-      if (filters.date.to && new Date(order.date) > new Date(filters.date.to)) {
-        return false;
-      }
-      if (
-        filters.product &&
-        !order.items.some((item) =>
-          item.name.toLowerCase().includes(filters.product.toLowerCase())
-        )
-      ) {
-        return false;
-      }
-      return true;
-    });
-  }, [filters, orders]);
+interface SuccessResponse {
+  success: boolean;
+  orders?: Order[]; 
+}
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+interface ErrorResponse {
+  success: false;
+  message: string;
+}
+
+const Order = () => {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [filterStatus, setFilterStatus] = useState<Status | "">("");
+  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
+  const [messages, setMessages] = useState<Record<string, string>>({}); //  an object to store messages for each order
+
+  const fetchAllOrders = async () => {
+    try {
+      const response = await axios.get<GetAllOrdersResponse>("/api/order/get-allbyuser");
+      if (response.data.success) {
+        setOrders(response.data.orders);
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      setError(error as Error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleFilterChange = (type: keyof Filters, value: any) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [type]: value,
-    }));
+  useEffect(() => {
+    fetchAllOrders();
+  }, []);
+
+  const handleFilterChange = async (status: Status | "") => {
+    setLoading(true);
+    setFilterStatus(status);
+
+    try {
+      const response = status === ""
+        ? await axios.get<GetAllOrdersResponse>("/api/order/get-allbyuser")
+        : await axios.post<FilterOrdersResponse>("/api/order/filter", { orderstatus: status });
+
+      if (response.data.success) {
+        setOrders(response.data.orders);
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      setError(error as Error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleMarkAsReceived = async (orderId: string) => {
+    try {
+      const response = await axios.put<SuccessResponse>("/api/order/updateStatus", { orderId, message: messages[orderId] });
+
+      if (response.data.success) {
+        setMessages(prev => ({ ...prev, [orderId]: "" })); // Clear message for the specific order
+        await fetchAllOrders();
+        toast.success("Received successfully!");
+      } else {
+        setMessages(prev => ({ ...prev, [orderId]: "Failed to update order status." }));
+        toast.error("Failed to update order status.");
+      }
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      setMessages(prev => ({ ...prev, [orderId]: "Error updating order status." }));
+      toast.error("Error updating order status.");
+    }
+  };
+
+  if (loading) {
+    return <div><Loader /></div>;
+  }
+
+  if (error) {
+    return <div className="text-red-600 text-center mt-4">An error occurred: {error.message}</div>;
+  }
+
+  const filteredOrders = orders.filter(order =>
+    filterStatus === "" || order.orderStatus === filterStatus
+  );
 
   return (
-    <div className="container mx-auto py-8 ">
-      <h1 className="text-3xl font-bold mb-6">Your Orders</h1>
-      <div className="bg-white shadow-md rounded-lg p-6 border">
-        <div className="flex items-center justify-between mb-6">
-          <div className="relative w-full max-w-md">
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Search orders..."
-              value={search}
-              onChange={handleSearch}
-              className="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-            />
-          </div>
-          <div className="flex items-center gap-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2">
-                  <div className="w-5 h-5" />
-                  Filters
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-64 p-4">
-                <div className="grid gap-4">
-                  <div>
-                    <h3 className="text-sm font-semibold mb-2">Order Status</h3>
-                    <div className="grid gap-2">
-                      <Label className="flex items-center gap-2">
-                        <Checkbox
-                          checked={filters.status.includes("Delivered")}
-                          onCheckedChange={() =>
-                            handleFilterChange(
-                              "status",
-                              filters.status.includes("Delivered")
-                                ? filters.status.filter(
-                                    (s) => s !== "Delivered"
-                                  )
-                                : [...filters.status, "Delivered"]
-                            )
-                          }
-                        />
-                        Delivered
-                      </Label>
-                      <Label className="flex items-center gap-2">
-                        <Checkbox
-                          checked={filters.status.includes("Shipped")}
-                          onCheckedChange={() =>
-                            handleFilterChange(
-                              "status",
-                              filters.status.includes("Shipped")
-                                ? filters.status.filter((s) => s !== "Shipped")
-                                : [...filters.status, "Shipped"]
-                            )
-                          }
-                        />
-                        Shipped
-                      </Label>
-                      <Label className="flex items-center gap-2">
-                        <Checkbox
-                          checked={filters.status.includes("Cancelled")}
-                          onCheckedChange={() =>
-                            handleFilterChange(
-                              "status",
-                              filters.status.includes("Cancelled")
-                                ? filters.status.filter(
-                                    (s) => s !== "Cancelled"
-                                  )
-                                : [...filters.status, "Cancelled"]
-                            )
-                          }
-                        />
-                        Cancelled
-                      </Label>
+    <>
+    <Toaster/>
+    <div className="container mx-auto p-6 max-w-6xl">
+      <Appbar />
+      <h1 className="text-4xl font-bold mb-6 text-center mt-4">My Orders</h1>
+
+      {/* Filter Buttons for large screens */}
+      <div className="hidden sm:flex mb-6 justify-center space-x-4">
+        {Object.values(Status).map((status) => (
+          <button
+            key={status}
+            onClick={() => handleFilterChange(status)}
+            className={`px-6 py-2 rounded-lg transition-colors duration-300 ${
+              filterStatus === status
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-800"
+            } hover:bg-blue-500 hover:text-white`}
+          >
+            {status === "Delievered" ? "Delivered" : status}
+          </button>
+        ))}
+        <button
+          onClick={() => handleFilterChange("")}
+          className={`px-6 py-2 rounded-lg transition-colors duration-300 ${
+            filterStatus === "" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800"
+          } hover:bg-blue-500 hover:text-white`}
+        >
+          All
+        </button>
+      </div>
+
+      <div className="flex justify-center mb-6 sm:hidden">
+        <button
+          onClick={() => setFilterMenuOpen(!filterMenuOpen)}
+          className="px-6 py-2 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300"
+        >
+          Filter
+        </button>
+      </div>
+
+      {filterMenuOpen && (
+        <div className="sm:hidden mb-6 bg-white border rounded-lg shadow-lg p-4">
+          <nav className="flex flex-col gap-2">
+            {Object.values(Status).map((status) => (
+              <button
+                key={status}
+                onClick={() => handleFilterChange(status)}
+                className={`px-6 py-2 rounded-lg transition-colors duration-300 ${
+                  filterStatus === status
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 text-gray-800"
+                } hover:bg-blue-500 hover:text-white`}
+              >
+                {status}
+              </button>
+            ))}
+            <button
+              onClick={() => handleFilterChange("")}
+              className={`px-6 py-2 rounded-lg transition-colors duration-300 ${
+                filterStatus === "" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800"
+              } hover:bg-blue-500 hover:text-white`}
+            >
+              All
+            </button>
+          </nav>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 gap-6">
+        {filteredOrders.length === 0 ? (
+          <div className="text-center text-lg font-semibold">No orders found</div>
+        ) : (
+          filteredOrders.map((order) => (
+            <div
+              key={order.id}
+              className="p-6 border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+            >
+              <h2 className="text-2xl font-semibold mb-3">Order ID: {order.id}</h2>
+              <p className="mb-2 text-lg">
+                Total Price: <span className="font-bold">{order.totalPrice} SOL</span>
+              </p>
+              <p className="mb-2 text-lg">
+                Status:{" "}
+                <span
+                  className={`font-bold ${
+                    order.orderStatus === Status.Delivered
+                      ? "text-green-600"
+                      : order.orderStatus === Status.Pending
+                      ? "text-yellow-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {order.orderStatus}
+                </span>
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+                {order.quantity.map((item, index) => (
+                  <div key={index} className="flex items-center space-x-4">
+                    <img
+                      src={item.productImage}
+                      alt={item.productTitle}
+                      className="w-24 h-24 object-cover rounded-lg"
+                    />
+                    <div>
+                      <h3 className="text-lg font-semibold">{item.productTitle}</h3>
+                      <p className="text-gray-600">{item.productDescription}</p>
+                      <p className="font-bold">{item.productPrice} SOL</p>
                     </div>
                   </div>
-                  <div></div>
+                ))}
+              </div>
+
+              {order.orderStatus === Status.Pending && (
+                <div className="mt-4">
+                  <input
+                    type="text"
+                    placeholder="Enter message here"
+                    value={messages[order.id] || ""}
+                    onChange={(e) =>
+                      setMessages(prev => ({
+                        ...prev,
+                        [order.id]: e.target.value
+                      }))
+                    }
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                  />
+
+<p className="pt-2">Enter received after receiving your order</p>
+
+                  <button
+                    onClick={() =>  handleMarkAsReceived(order.id)}
+                    className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg"
+                  >
+                    Mark as Received
+                  </button>
                 </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button>Export</Button>
-          </div>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full table-auto">
-            <thead className="bg-gray-100 text-gray-600">
-              <tr>
-                <th className="px-4 py-3 text-left">Order #</th>
-                <th className="px-4 py-3 text-left">Date</th>
-                <th className="px-4 py-3 text-left">Items</th>
-                <th className="px-4 py-3 text-right">Total</th>
-                <th className="px-4 py-3 text-left">Status</th>
-                <th className="px-4 py-3 text-left">Track</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {filteredOrders.map((order) => (
-                <tr key={order.id}>
-                  <td className="px-4 py-3 font-medium">
-                    <Link
-                      href="/"
-                      className="text-primary hover:underline"
-                      prefetch={false}
-                    >
-                      {order.id}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3">{order.date}</td>
-                  <td className="px-4 py-3">
-                    {order.items.map((item, index) => (
-                      <div key={index}>
-                        {item.quantity} x {item.name}
-                      </div>
-                    ))}
-                  </td>
-                  <td className="px-4 py-3 text-right font-medium">
-                    ${order.total.toFixed(2)}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge
-                      variant={
-                        order.status === "Delivered"
-                          ? "default"
-                          : order.status === "Shipped"
-                          ? "outline"
-                          : "destructive"
-                      }
-                    >
-                      {order.status}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link
-                      href="/"
-                      className="text-primary hover:underline"
-                      prefetch={false}
-                    >
-                      Track
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              )}
+            </div>
+          ))
+        )}
       </div>
     </div>
+    </>
   );
-}
+};
+
+export default Order;
