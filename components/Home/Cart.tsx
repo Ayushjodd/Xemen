@@ -34,9 +34,7 @@ export default function CartPage() {
 
         if (data.success) {
           setCart(data.cart.items);
-        } else {
-          toast.error(data.message || "Failed to load cart");
-        }
+        } 
       } catch (error) {
         console.error("Error fetching cart:", error);
         toast.error("Failed to load cart");

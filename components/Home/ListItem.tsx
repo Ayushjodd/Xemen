@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState, ChangeEvent } from "react";
@@ -16,39 +15,48 @@ import {
 } from "@/components/ui/select";
 import {
   Breadcrumb,
-  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import Appbar from "../Appbar/Appbar";
 
 interface Listing {
-  name: string;
+  title: string;
   description: string;
   price: number;
   imageUrl: string;
+  category: string; 
 }
 
 export default function ListAnItem() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [newListing, setNewListing] = useState<Listing>({
-    name: "",
+    title: "",
     description: "",
     price: 0,
     imageUrl: "",
+    category: "", 
   });
   const [imageUrlError, setImageUrlError] = useState<string | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
+  
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setNewListing({
       ...newListing,
       [e.target.name]: e.target.value,
+    });
+  };
+  
+  const handleCategoryChange = (category: string) => {
+    setNewListing({
+      ...newListing,
+      category: category,
     });
   };
 
@@ -60,7 +68,7 @@ export default function ListAnItem() {
         "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
         "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
         "(\\#[-a-z\\d_]*)?$",
-      "i" // fragment locator
+      "i"
     );
     return !!urlPattern.test(url);
   };
@@ -81,13 +89,7 @@ export default function ListAnItem() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          title: newListing.name,
-          description: newListing.description,
-          price: newListing.price,
-          imageUrl: newListing.imageUrl,
-          category: "default-category", // Adjust as needed
-        }),
+        body: JSON.stringify(newListing),
       });
 
       const result = await response.json();
@@ -96,10 +98,11 @@ export default function ListAnItem() {
         setSuccessMessage("Item listed successfully!");
         setListings([...listings, newListing]);
         setNewListing({
-          name: "",
+          title: "",
           description: "",
           price: 0,
           imageUrl: "",
+          category: "",
         });
       } else {
         setApiError(result.message || "Failed to list item.");
@@ -113,6 +116,9 @@ export default function ListAnItem() {
   return (
     <>
       <div>
+      <div className="mt-10 mx-6">
+      <Appbar/>
+      </div>
         <div className="flex justify-center mt-40">
           <Breadcrumb>
             <BreadcrumbList>
@@ -137,7 +143,7 @@ export default function ListAnItem() {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-        <div className="container mx-auto  ">
+        <div className="container mx-auto">
           <div className="mx-auto max-w-2xl">
             <div className="border rounded-lg shadow-lg">
               <form
@@ -150,9 +156,9 @@ export default function ListAnItem() {
                   </label>
                   <Input
                     type="text"
-                    id="name"
-                    name="name"
-                    value={newListing.name}
+                    id="title"
+                    name="title"
+                    value={newListing.title}
                     onChange={handleInputChange}
                     placeholder="Enter product name"
                     className="w-full border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
@@ -173,28 +179,27 @@ export default function ListAnItem() {
                     placeholder="Enter product description"
                     className="w-full border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
                   />
-                  <div className="mt-4">
-                    <label
-                      htmlFor="description"
-                      className="block font-medium mb-2"
-                    >
-                      Category
-                    </label>
-                    <Select>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a Category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Categories</SelectLabel>
-                          <SelectItem value="apple">Electronics</SelectItem>
-                          <SelectItem value="banana">Fashion</SelectItem>
-                          <SelectItem value="blueberry">Tools</SelectItem>
-                          <SelectItem value="grapes">Groceries</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="category" className="block font-medium mb-2">
+                    Category
+                  </label>
+                  <Select onValueChange={handleCategoryChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Categories</SelectLabel>
+                        <SelectItem value="Electronics">Electronics</SelectItem>
+                        <SelectItem value="Fashion">Fashion</SelectItem>
+                        <SelectItem value="Tools">Tools</SelectItem>
+                        <SelectItem value="Groceries">Groceries</SelectItem>
+                        <SelectItem value="NFT">NFT</SelectItem>
+                        <SelectItem value="Others">Others</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="mb-4">
                   <label htmlFor="price" className="block font-medium mb-2">
@@ -208,7 +213,8 @@ export default function ListAnItem() {
                     onChange={handleInputChange}
                     placeholder="Enter product price"
                     className="w-full border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
-                    min="0" // kahi to dalla -ve mai input dede💀
+                    min="0"
+                    step="any"
                   />
                 </div>
                 <div className="mb-4">
