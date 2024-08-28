@@ -20,7 +20,7 @@ export default function CardComp({
 }: CardProps) {
   const router = useRouter();
 
-  const handleBuyNowClick = () => {
+  const viewProduct = () => {
     router.push(`/product/${productId}`);
   };
 
@@ -49,8 +49,8 @@ export default function CardComp({
         </div>
       </CardContent>
       <CardFooter className="flex justify-center">
-        <Button onClick={handleBuyNowClick} className="w-full">
-          Buy Now
+        <Button onClick={viewProduct} className="w-full">
+          View Details
         </Button>
       </CardFooter>
     </Card>
