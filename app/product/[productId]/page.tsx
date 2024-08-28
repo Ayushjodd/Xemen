@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import Loader from "@/components/Home/Loader";
 import { FaShoppingCart } from "react-icons/fa";
+import axios from "axios";
 
 interface Product {
   id: string;
@@ -28,18 +29,26 @@ interface Product {
   updatedAt: string;
 }
 
+// Define the interface for the order response
+interface OrderResponse {
+  success: boolean;
+  message?: string;
+  // Add any other properties as needed
+}
+
 export default function ProductPage() {
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const { productId } = useParams();
-  const [loading, setLoading] = useState<Boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [addCart, setAddCart] = useState(false);
+  const [quantity, setQuantity] = useState<number>(1);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/product/${productId}`
+          `/api/product/${productId}`
         );
         const data = await response.json();
         if (data) {
@@ -60,13 +69,13 @@ export default function ProductPage() {
   const handleAddToCart = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/cart/add/${productId}`,
+        `/api/cart/add/${productId}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ quantity: 1 }),
+          body: JSON.stringify({ quantity }),
         }
       );
 
@@ -87,7 +96,7 @@ export default function ProductPage() {
   const handleRemoveFromCart = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/cart/remove/${productId}`,
+        `/api/cart/remove/${productId}`,
         {
           method: "DELETE",
           headers: {
@@ -109,6 +118,26 @@ export default function ProductPage() {
       toast.error("Failed to remove item from cart");
     }
   };
+  const handleBuyNow = async () => {
+    try {
+      const response = await axios.post<OrderResponse>(
+        `/api/order/create/${productId}`,
+        { quantity }
+      );
+  
+  
+      if (response.data.success) {
+        toast.success("Order placed successfully");
+        await router.push("/orders")
+        // Optionally handle successful order, e.g., redirect or update state
+      } else {
+        toast.error(response.data.message || "Failed to place order");
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      toast.error("Failed to place order");
+    }
+  };
 
   if (loading) {
     return (
@@ -128,7 +157,7 @@ export default function ProductPage() {
     <>
       <Toaster />
       <div className="bg-background">
-        <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 ">
+        <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -173,7 +202,7 @@ export default function ProductPage() {
                   onClick={() => router.push("/cart")}
                 >
                   Go to Cart
-                  <span className=" text-lg pl-1">
+                  <span className="text-lg pl-1">
                     <FaShoppingCart />
                   </span>
                 </Button>
@@ -184,22 +213,29 @@ export default function ProductPage() {
                   src="https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png"
                   alt="Solana Logo"
                 />
-                <span>{product.price} SOL</span>
+                <span>{product.price} SOL /quantity</span>
               </div>
               <div className="text-sm leading-loose text-muted-foreground">
                 {product.description}
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
+                <input
+                  type="number"
+                  value={quantity}
+                  min="1"
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  className="border rounded-md p-2 text-center"
+                />
                 {!addCart ? (
-                  <Button size="lg" className="" onClick={handleAddToCart}>
+                  <Button size="lg" onClick={handleAddToCart}>
                     Add to Cart
                   </Button>
                 ) : (
-                  <Button size="lg" className="" onClick={handleRemoveFromCart}>
+                  <Button size="lg" onClick={handleRemoveFromCart}>
                     Remove from Cart
                   </Button>
                 )}
-                <Button size="lg" variant="outline">
+                <Button size="lg" variant="outline" onClick={handleBuyNow}>
                   Buy Now
                 </Button>
               </div>
