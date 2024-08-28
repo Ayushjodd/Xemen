@@ -20,17 +20,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { category } = await req.json();
+    const { orderstatus } = await req.json();
+    const userId  = session.user?.uid;
 
     const orders = await prisma.order.findMany({
       where: {
-        items: {
-          some: {
-            product: {
-              category: category 
-            },
-          },
-        },
+        Orderstatus:orderstatus,
+        userId:userId
       },
       select: {
         id: true,
