@@ -94,7 +94,7 @@ export default function AllItems() {
                   key={product.id}
                   url={product.imageUrl}
                   title={product.title}
-                  description={product.description}
+                  description={product.description.slice(0, 30) + "..."}
                   price={product.price}
                 />
               ))}
