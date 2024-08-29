@@ -131,11 +131,11 @@ export default function ProductPage() {
         await router.push("/orders")
         // Optionally handle successful order, e.g., redirect or update state
       } else {
-        toast.error(response.data.message || "Failed to place order");
+        toast.error((response.data.message)?.toString() || "Failed to place order");
       }
-    } catch (error) {
+    } catch (error:any) {
       console.error("Error placing order:", error);
-      toast.error("Failed to place order");
+      toast.error(String(error.response.data.message));
     }
   };
 
