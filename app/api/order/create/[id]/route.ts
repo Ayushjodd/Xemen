@@ -15,6 +15,7 @@ function base64ToUint8Array(base64: string): Uint8Array {
     return bytes;
 }
 
+export const maxDuration =60;
 const connection = new Connection("https://api.devnet.solana.com");
 
 export async function POST(req: NextRequest, context: { params: { id: string } }) {
