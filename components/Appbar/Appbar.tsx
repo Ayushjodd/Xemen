@@ -62,7 +62,7 @@ export default function Appbar() {
               <FaShoppingCart /> <span className="pl-2">Cart</span>
             </div>
           </Link>
-          <Link href="#" className="text-sm font-medium hover:underline underline-offset-4 px-2" prefetch={false}>
+          <Link href="/contact" className="text-sm font-medium hover:underline underline-offset-4 px-2" prefetch={false}>
             <div className="pr-2 lg:pr-4 flex items-center">
               <FaHeadphonesAlt /> <span className="pl-2">Contact Us</span>
             </div>
@@ -189,7 +189,7 @@ export default function Appbar() {
               </span>
             </Link>
             <Link
-              href="#"
+              href="/contact"
               className="text-sm font-medium hover:underline underline-offset-4 px-4"
               prefetch={false}
             >
