@@ -20,6 +20,8 @@ const nextConfig = {
           }
         ],
       },
+      reactStrictMode: true,  // Enabling React strict mode
+      swcMinify: true,        // Using SWC for minification
 };
 
 export default nextConfig;
