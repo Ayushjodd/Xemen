@@ -66,7 +66,38 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
             return NextResponse.json({ error: 'Buyer SolWallet not found' }, { status: 404 });
         }
 
-        // Check if seller's SolWallet is present
+        const balanceResponse = await fetch("https://api.devnet.solana.com", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                jsonrpc: "2.0",
+                id: 1,
+                method: "getBalance",
+                params: [buyerSolWallet.publicKey],
+            }),
+        });
+
+        const balanceData = await balanceResponse.json();
+
+        if (!balanceData.result) {
+            return NextResponse.json(
+                { success: false, message: "Failed to fetch balance" },
+                { status: 500 }
+            );
+        }
+
+        const balanceLamports = balanceData.result.value;
+
+     // Calculate totalPriceLamports correctly using BigInt for precision
+const TotalPriceLamports = BigInt(Math.round(totalPriceInSol * Number(LAMPORTS_PER_SOL)));
+
+// Check if buyer has sufficient balance in Lamports
+if (BigInt(balanceLamports) < TotalPriceLamports) {
+    return NextResponse.json({ success: false, message: "Insufficient Balance" }, { status: 411 });
+}
+
         if (!product.seller.solWallet) {
             return NextResponse.json({ error: 'Seller SolWallet not found' }, { status: 404 });
         }
