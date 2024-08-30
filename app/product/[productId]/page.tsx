@@ -30,11 +30,9 @@ interface Product {
   updatedAt: string;
 }
 
-// Define the interface for the order response
 interface OrderResponse {
   success: boolean;
   message?: string;
-  // Add any other properties as needed
 }
 
 export default function ProductPage() {
@@ -48,9 +46,7 @@ export default function ProductPage() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(
-          `/api/product/${productId}`
-        );
+        const response = await fetch(`/api/product/${productId}`);
         const data = await response.json();
         if (data) {
           setProduct(data);
@@ -69,16 +65,13 @@ export default function ProductPage() {
 
   const handleAddToCart = async () => {
     try {
-      const response = await fetch(
-        `/api/cart/add/${productId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ quantity }),
-        }
-      );
+      const response = await fetch(`/api/cart/add/${productId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ quantity }),
+      });
 
       const data = await response.json();
 
@@ -96,15 +89,12 @@ export default function ProductPage() {
 
   const handleRemoveFromCart = async () => {
     try {
-      const response = await fetch(
-        `/api/cart/remove/${productId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`/api/cart/remove/${productId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const data = await response.json();
 
@@ -125,16 +115,17 @@ export default function ProductPage() {
         `/api/order/create/${productId}`,
         { quantity }
       );
-  
-  
+
       if (response.data.success) {
         toast.success("Order placed successfully");
-        await router.push("/orders")
+        await router.push("/orders");
         // Optionally handle successful order, e.g., redirect or update state
       } else {
-        toast.error((response.data.message)?.toString() || "Failed to place order");
+        toast.error(
+          response.data.message?.toString() || "Failed to place order"
+        );
       }
-    } catch (error:any) {
+    } catch (error: any) {
       console.error("Error placing order:", error);
       toast.error(String(error.response.data.message));
     }
@@ -158,9 +149,9 @@ export default function ProductPage() {
     <>
       <Toaster />
       <div className="bg-background">
-      <div className="mt-10 mx-10 md:mx-14 lg:mx-20">
-      <Appbar/>
-      </div>
+        <div className="mt-10 mx-10 md:mx-14 lg:mx-20">
+          <Appbar />
+        </div>
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
           <Breadcrumb>
             <BreadcrumbList>
@@ -187,13 +178,14 @@ export default function ProductPage() {
             </BreadcrumbList>
           </Breadcrumb>
           <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-            <div className="w-full h-[400px] md:h-[600px] overflow-hidden rounded-md">
+            <div className="w-full h-auto md:h-[600px] overflow-hidden rounded-md">
               <img
-                className="object-cover w-full h-full transition-transform duration-300 ease-in-out transform hover:scale-105"
+                className="object-cover w-full h-auto transition-transform duration-300 ease-in-out transform hover:scale-105"
                 src={product.imageUrl}
                 alt={product.title}
               />
             </div>
+
             <div className="grid gap-6">
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold">
@@ -222,24 +214,37 @@ export default function ProductPage() {
               <div className="text-sm leading-loose text-muted-foreground">
                 {product.description}
               </div>
-              <div className="flex gap-2 items-center">
+              <div className="flex flex-col md:flex-row gap-2 items-center">
                 <input
                   type="number"
                   value={quantity}
                   min="1"
                   onChange={(e) => setQuantity(Number(e.target.value))}
-                  className="border rounded-md p-2 text-center"
+                  className="border rounded-md p-2 text-center w-full md:w-auto"
                 />
                 {!addCart ? (
-                  <Button size="lg" onClick={handleAddToCart}>
+                  <Button
+                    size="lg"
+                    className="w-full md:w-auto"
+                    onClick={handleAddToCart}
+                  >
                     Add to Cart
                   </Button>
                 ) : (
-                  <Button size="lg" onClick={handleRemoveFromCart}>
+                  <Button
+                    size="lg"
+                    className="w-full md:w-auto"
+                    onClick={handleRemoveFromCart}
+                  >
                     Remove from Cart
                   </Button>
                 )}
-                <Button size="lg" variant="outline" onClick={handleBuyNow}>
+                <Button
+                  size="lg"
+                  className="w-full md:w-auto"
+                  variant="outline"
+                  onClick={handleBuyNow}
+                >
                   Buy Now
                 </Button>
               </div>

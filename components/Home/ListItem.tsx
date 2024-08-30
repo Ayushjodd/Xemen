@@ -111,9 +111,9 @@ export default function ListAnItem() {
     <>
       <Toaster />
       <div>
-        <div className="mt-10  flex flex-col mx-64">
-          <Appbar />
-        </div>
+      <div className="mt-10 mx-10 md:mx-14 lg:mx-20">
+      <Appbar/>
+      </div>
         <div className="flex justify-center mt-40"></div>
         <div className="container mx-auto">
           <div className="mx-auto max-w-2xl">
