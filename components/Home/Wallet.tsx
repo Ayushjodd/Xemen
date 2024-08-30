@@ -66,9 +66,9 @@ export default function Wallet() {
   }
 
   return (
-    <div className="overflow-hidden h-screen flex flex-col">
-      <div className="mt-10 mx-48 ">
-        <Appbar />
+    <div className="overflow-hidden h-screen flex flex-col mb-8">
+    <div className="mt-10 mx-10 md:mx-14 lg:mx-20">
+      <Appbar/>
       </div>
       <div className="flex flex-col items-center justify-center flex-grow p-4 md:p-8">
         <div className="bg-card rounded-lg shadow-lg p-6 flex flex-col gap-6 max-w-md w-full border relative">

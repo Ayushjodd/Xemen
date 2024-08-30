@@ -3,7 +3,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import MountainIcon from "../icons/Mountain";
+import { SiSolana } from "react-icons/si";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { MdLogout } from "react-icons/md";
@@ -42,7 +42,7 @@ export default function Appbar() {
     <div>
       <header className="px-2 lg:px-4 h-14 flex items-center justify-between border rounded-full">
         <Link href="#" className="flex items-center justify-center" prefetch={false}>
-          <MountainIcon className="h-6 w-6" />
+          <SiSolana className="h-6 w-6" />
           <span className="sr-only">Solana Marketplace</span>
         </Link>
 

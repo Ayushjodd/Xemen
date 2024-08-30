@@ -15,6 +15,7 @@ import {
 import Loader from "@/components/Home/Loader";
 import { FaShoppingCart } from "react-icons/fa";
 import axios from "axios";
+import Appbar from "@/components/Appbar/Appbar";
 
 interface Product {
   id: string;
@@ -157,6 +158,9 @@ export default function ProductPage() {
     <>
       <Toaster />
       <div className="bg-background">
+      <div className="mt-10 mx-10 md:mx-14 lg:mx-20">
+      <Appbar/>
+      </div>
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
           <Breadcrumb>
             <BreadcrumbList>

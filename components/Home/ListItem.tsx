@@ -116,7 +116,7 @@ export default function ListAnItem() {
   return (
     <>
       <div>
-      <div className="mt-10 mx-6">
+      <div className="mt-10 mx-10 md:mx-14 lg:mx-20">
       <Appbar/>
       </div>
         <div className="flex justify-center mt-40">

@@ -5,6 +5,7 @@ import axios from "axios";
 import Appbar from "../Appbar/Appbar";
 import Loader from "./Loader";
 import toast, { Toaster } from "react-hot-toast";
+import { SecondaryAppbar } from "../Appbar/SecondaryAppbar";
 
 
 interface OrderItem {
@@ -134,7 +135,7 @@ const Order = () => {
     <>
     <Toaster/>
     <div className="container mx-auto p-6 max-w-6xl">
-      <Appbar />
+    <SecondaryAppbar/>
       <h1 className="text-4xl font-bold mb-6 text-center mt-4">My Orders</h1>
 
       {/* Filter Buttons for large screens */}

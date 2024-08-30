@@ -112,10 +112,8 @@ export const SecondaryAppbar = () => {
               </DropdownMenuTrigger>
               {user ? (
                 <DropdownMenuContent className="w-56">
-                  <DropdownMenuItem
-                    onSelect={() => console.log("Profile selected")}
-                  >
-                    Profile
+                  <DropdownMenuItem onSelect={() => router.push("/")}>
+                    Home
                   </DropdownMenuItem>
                   <DropdownMenuItem onSelect={async () => await signOut()}>
                     Logout
@@ -128,8 +126,8 @@ export const SecondaryAppbar = () => {
                   <DropdownMenuItem onSelect={() => router.push("/wallet")}>
                     Wallet
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => router.push("/")}>
-                    Home
+                  <DropdownMenuItem onSelect={() => router.push("/all-items")}>
+                    All Items
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               ) : (
@@ -137,8 +135,8 @@ export const SecondaryAppbar = () => {
                   <DropdownMenuItem onSelect={() => router.push("/signin")}>
                     Login
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => router.push("/")}>
-                    Home
+                  <DropdownMenuItem onSelect={() => router.push("/all-items")}>
+                    All Items
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               )}

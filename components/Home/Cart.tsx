@@ -20,6 +20,7 @@ import MinusIcon from "../icons/MinusIcon";
 import PlusIcon from "../icons/PlusIcon";
 import TrashIcon from "../icons/TrashIcon";
 import { useRouter } from "next/navigation";
+import { SecondaryAppbar } from "../Appbar/SecondaryAppbar";
 
 export default function CartPage() {
   const router = useRouter();
@@ -113,8 +114,11 @@ export default function CartPage() {
   return (
     <>
       <Toaster />
-      <div className="container mx-auto px-4 md:px-6 py-12">
-        <div className="justify-between flex">
+      <div className="container mx-auto px-4 md:px-6 mb-8">
+        <div className="py-12">
+        <SecondaryAppbar/>
+        </div>
+        <div className="justify-between flex mt-3">
           <div className="mb-8">
             <Breadcrumb>
               <BreadcrumbList>
