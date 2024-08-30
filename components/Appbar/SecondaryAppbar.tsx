@@ -19,6 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { UserRound } from "lucide-react";
 
 export const SecondaryAppbar = () => {
   const router = useRouter();
@@ -71,6 +72,19 @@ export const SecondaryAppbar = () => {
               size="icon"
               variant="ghost"
               onClick={() => {
+                router.push("/profile");
+              }}
+            >
+              <span className="text-2xl text-[#64748b] ">
+                {" "}
+                <UserRound scale={15} />
+              </span>
+            </Button>
+
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => {
                 router.push("/cart");
               }}
             >
@@ -104,6 +118,9 @@ export const SecondaryAppbar = () => {
                 <DropdownMenuContent className="w-56">
                    <DropdownMenuItem onSelect={() => router.push("/")}>
                    Home
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => router.push("/profile")}>
+                    Profile
                   </DropdownMenuItem>
                   <DropdownMenuItem onSelect={async () => await signOut()}>
                     Logout

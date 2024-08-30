@@ -145,6 +145,13 @@ export default function Appbar() {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="flex gap-2 cursor-pointer text-black/70 hover:text-black transition"
+                  onClick={() => router.push("/profile")}
+                >
+                  <UserRound size={15}/>
+                  <span>Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="flex gap-2 cursor-pointer text-black/70 hover:text-black transition"
                   onClick={() => router.push("/all-items")}
                 >
                   <MdOutlineProductionQuantityLimits />
