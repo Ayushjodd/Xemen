@@ -13,7 +13,6 @@ import SearchIcon from "../icons/SearchIcons";
 import { Input } from "@/components/ui/input";
 import { Button } from "../ui/newButton";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import FilterIcon from "../icons/FilterIcon";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,8 +26,6 @@ export const SecondaryAppbar = () => {
   const session = useSession();
   const RiyalUser = session.data?.user;
   const image = RiyalUser?.image || "";
-  console.log(image);
-  console.log(RiyalUser);
 
   useEffect(() => {
     if (session.data?.user) {
@@ -55,13 +52,6 @@ export const SecondaryAppbar = () => {
               placeholder="Search for products..."
               className="w-full bg-background pl-10 pr-12 py-2 rounded-lg shadow-sm"
             />
-            <Button
-              size="icon"
-              variant="ghost"
-              className="absolute right-3 top-1/2 -translate-y-1/2"
-            >
-              <FilterIcon className="w-5 h-5 text-muted-foreground" />
-            </Button>
           </div>
           <div className="flex items-center gap-4">
             <Button
@@ -112,8 +102,10 @@ export const SecondaryAppbar = () => {
               </DropdownMenuTrigger>
               {user ? (
                 <DropdownMenuContent className="w-56">
-                  <DropdownMenuItem onSelect={() => router.push("/")}>
-                    Home
+                  <DropdownMenuItem
+                    onSelect={() => console.log("Profile selected")}
+                  >
+                    Profile
                   </DropdownMenuItem>
                   <DropdownMenuItem onSelect={async () => await signOut()}>
                     Logout
@@ -126,8 +118,8 @@ export const SecondaryAppbar = () => {
                   <DropdownMenuItem onSelect={() => router.push("/wallet")}>
                     Wallet
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => router.push("/all-items")}>
-                    All Items
+                  <DropdownMenuItem onSelect={() => router.push("/")}>
+                    Home
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               ) : (
@@ -135,8 +127,8 @@ export const SecondaryAppbar = () => {
                   <DropdownMenuItem onSelect={() => router.push("/signin")}>
                     Login
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => router.push("/all-items")}>
-                    All Items
+                  <DropdownMenuItem onSelect={() => router.push("/")}>
+                    Home
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               )}
