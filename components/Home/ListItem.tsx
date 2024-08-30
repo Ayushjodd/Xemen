@@ -3,6 +3,7 @@
 import { useState, ChangeEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { toast, Toaster } from "react-hot-toast";
 import { Button } from "@/components/ui/newButton";
 import {
   Select,
@@ -13,14 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import Appbar from "../Appbar/Appbar";
 
 interface Listing {
@@ -28,7 +21,7 @@ interface Listing {
   description: string;
   price: number;
   imageUrl: string;
-  category: string; 
+  category: string;
 }
 
 export default function ListAnItem() {
@@ -38,12 +31,11 @@ export default function ListAnItem() {
     description: "",
     price: 0,
     imageUrl: "",
-    category: "", 
+    category: "",
   });
   const [imageUrlError, setImageUrlError] = useState<string | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  
+
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -52,7 +44,7 @@ export default function ListAnItem() {
       [e.target.name]: e.target.value,
     });
   };
-  
+
   const handleCategoryChange = (category: string) => {
     setNewListing({
       ...newListing,
@@ -95,7 +87,7 @@ export default function ListAnItem() {
       const result = await response.json();
 
       if (result.success) {
-        setSuccessMessage("Item listed successfully!");
+        toast.success("Product successfully listed!");
         setListings([...listings, newListing]);
         setNewListing({
           title: "",
@@ -106,43 +98,23 @@ export default function ListAnItem() {
         });
       } else {
         setApiError(result.message || "Failed to list item.");
+        toast.error(result.message || "Failed to list item.");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
       setApiError("Failed to list item.");
+      toast.error("Failed to list item.");
     }
   };
 
   return (
     <>
+      <Toaster />
       <div>
-      <div className="mt-10 mx-10 md:mx-14 lg:mx-20">
-      <Appbar/>
-      </div>
-        <div className="flex justify-center mt-40">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink className="text-lg" href="/">
-                  Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink className="text-lg" href="/all-items">
-                  All-Items
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-
-              <BreadcrumbItem>
-                <BreadcrumbPage className="text-lg">
-                  List Your Product
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+        <div className="mt-10  flex flex-col mx-64">
+          <Appbar />
         </div>
+        <div className="flex justify-center mt-40"></div>
         <div className="container mx-auto">
           <div className="mx-auto max-w-2xl">
             <div className="border rounded-lg shadow-lg">
@@ -236,11 +208,6 @@ export default function ListAnItem() {
                 </div>
                 {apiError && (
                   <p className="text-red-500 text-sm mb-4">{apiError}</p>
-                )}
-                {successMessage && (
-                  <p className="text-green-500 text-sm mb-4">
-                    {successMessage}
-                  </p>
                 )}
                 <Button
                   type="submit"
