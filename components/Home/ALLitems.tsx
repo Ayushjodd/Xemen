@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import CardComp from "../shared/CardComp";
-import { useRouter } from "next/navigation";
 import { SkeletonCard } from "./Loader";
 import { useSession } from "next-auth/react";
 import { SecondaryAppbar } from "../Appbar/SecondaryAppbar";
+import { Button } from "../ui/newButton";
 
 interface Product {
   id: number;
@@ -25,7 +25,7 @@ export default function AllItems() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(8);
   const [loading, setLoading] = useState<boolean>(true);
-  const router = useRouter();
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [user, setUser] = useState(false);
   const session = useSession();
 
@@ -59,23 +59,55 @@ export default function AllItems() {
     fetchProducts();
   }, []);
 
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
+  };
+
+  const filteredProducts =
+    selectedCategory === "all"
+      ? products
+      : products.filter((product) => product.category === selectedCategory);
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(products.length / itemsPerPage);
-
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
+  const currentItems = filteredProducts.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   return (
     <div className="bg-muted/40 min-h-screen">
       <SecondaryAppbar />
-      <main className="container mx-auto px-4 md:px-6 py-8">
+      <main className="container mx-auto px-4 md:px-6 py-4">
+        <div className="flex justify-center gap-4 mb-4">
+          {[
+            "all",
+            "Electronics",
+            "Fashion",
+            "Tools",
+            "Groceries",
+            "NFT",
+            "Others",
+          ].map((category) => (
+            <Button
+              variant="ghost"
+              key={category}
+              className={`px-4 py-2 ${
+                selectedCategory === category
+                  ? "bg-blue-500 text-white"
+                  : " text-gray-700"
+              }`}
+              onClick={() => handleCategoryChange(category)}
+            >
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </Button>
+          ))}
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {loading
-            ? // Show skeleton loaders if loading
-              Array.from({ length: 8 }).map((_, index) => (
+            ? Array.from({ length: 8 }).map((_, index) => (
                 <SkeletonCard key={index} />
               ))
             : currentItems.map((product) => (
@@ -86,10 +118,10 @@ export default function AllItems() {
                   title={product.title}
                   description={product.description.slice(0, 30) + "..."}
                   price={product.price}
+                  category={product.category}
                 />
               ))}
         </div>
-        <div className="flex justify-center mt-8"></div>
       </main>
     </div>
   );

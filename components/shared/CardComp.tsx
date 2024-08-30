@@ -9,6 +9,7 @@ interface CardProps {
   price: string;
   url: string;
   productId: string;
+  category: string;
 }
 
 export default function CardComp({
@@ -17,6 +18,7 @@ export default function CardComp({
   price,
   url,
   productId,
+  category,
 }: CardProps) {
   const router = useRouter();
 
