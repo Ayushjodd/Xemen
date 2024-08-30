@@ -26,6 +26,7 @@ export default function AllItems() {
   const [itemsPerPage] = useState<number>(8);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const [user, setUser] = useState(false);
   const session = useSession();
 
@@ -62,6 +63,7 @@ export default function AllItems() {
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
     setCurrentPage(1);
+    setFilterMenuOpen(false);
   };
 
   const filteredProducts =
@@ -71,33 +73,19 @@ export default function AllItems() {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredProducts.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="bg-muted/40 min-h-screen">
       <SecondaryAppbar />
       <main className="container mx-auto px-4 md:px-6 py-4">
-        <div className="flex justify-center gap-4 mb-4">
-          {[
-            "all",
-            "Electronics",
-            "Fashion",
-            "Tools",
-            "Groceries",
-            "NFT",
-            "Others",
-          ].map((category) => (
+        {/* Filter Buttons for large screens */}
+        <div className="hidden sm:flex justify-center gap-4 mb-4">
+          {["all", "Electronics", "Fashion", "Tools", "Groceries", "NFT", "Others"].map((category) => (
             <Button
               variant="ghost"
               key={category}
-              className={`px-4 py-2 ${
-                selectedCategory === category
-                  ? "bg-blue-500 text-white"
-                  : " text-gray-700"
-              }`}
+              className={`px-4 py-2 ${selectedCategory === category ? "bg-blue-500 text-white" : "text-gray-700"}`}
               onClick={() => handleCategoryChange(category)}
             >
               {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -105,11 +93,38 @@ export default function AllItems() {
           ))}
         </div>
 
+        {/* Filter Button for small screens */}
+        <div className="flex justify-center sm:hidden mb-4">
+          <Button
+            variant="ghost"
+            className="bg-gray-200 hover:bg-gray-300 px-4 py-2 text-gray-700"
+            onClick={() => setFilterMenuOpen(!filterMenuOpen)}
+          >
+            Filter
+          </Button>
+        </div>
+
+        {/* Filter Menu for small screens */}
+        {filterMenuOpen && (
+          <div className="sm:hidden bg-white border rounded-lg shadow-lg p-4 mb-4">
+            <nav className="flex flex-col gap-2">
+              {["all", "Electronics", "Fashion", "Tools", "Groceries", "NFT", "Others"].map((category) => (
+                <Button
+                  variant="ghost"
+                  key={category}
+                  className={`px-4 py-2 ${selectedCategory === category ? "bg-blue-500 text-white" : "text-gray-700"}`}
+                  onClick={() => handleCategoryChange(category)}
+                >
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                </Button>
+              ))}
+            </nav>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {loading
-            ? Array.from({ length: 8 }).map((_, index) => (
-                <SkeletonCard key={index} />
-              ))
+            ? Array.from({ length: 8 }).map((_, index) => <SkeletonCard key={index} />)
             : currentItems.map((product) => (
                 <CardComp
                   productId={product.id.toString()}
