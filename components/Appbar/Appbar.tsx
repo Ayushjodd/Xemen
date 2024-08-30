@@ -7,10 +7,21 @@ import { SiSolana } from "react-icons/si";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { MdLogout } from "react-icons/md";
-import { FaWallet, FaShoppingCart, FaHeadphonesAlt, FaHome } from "react-icons/fa";
+import {
+  FaWallet,
+  FaShoppingCart,
+  FaHeadphonesAlt,
+  FaHome,
+} from "react-icons/fa";
 import { BsBox } from "react-icons/bs";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { UserRound } from "lucide-react"; 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { UserRound } from "lucide-react";
 import UserImage from "./UserImage";
 import { MdOutlineProductionQuantityLimits } from "react-icons/md";
 import { FaPen } from "react-icons/fa6";
@@ -20,7 +31,6 @@ export default function Appbar() {
   const { data: session } = useSession();
   const [user, setUser] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
 
   useEffect(() => {
     if (session?.user) {
@@ -41,28 +51,48 @@ export default function Appbar() {
   return (
     <div>
       <header className="px-2 lg:px-4 h-14 flex items-center justify-between border rounded-full">
-        <Link href="#" className="flex items-center justify-center" prefetch={false}>
+        <Link
+          href="#"
+          className="flex items-center justify-center"
+          prefetch={false}
+        >
           <SiSolana className="h-6 w-6" />
           <span className="sr-only">Solana Marketplace</span>
         </Link>
 
         <nav className="hidden sm:flex items-center gap-4 sm:gap-6">
-          <Link href="/orders" className="text-sm font-medium hover:underline underline-offset-4 px-2" prefetch={false}>
+          <Link
+            href="/orders"
+            className="text-sm font-medium hover:underline underline-offset-4 px-2"
+            prefetch={false}
+          >
             <div className="pr-2 lg:pr-4 flex items-center">
               <BsBox /> <span className="pl-2">Orders</span>
             </div>
           </Link>
-          <Link href="/wallet" className="text-sm font-medium hover:underline underline-offset-4 px-2" prefetch={false}>
+          <Link
+            href="/wallet"
+            className="text-sm font-medium hover:underline underline-offset-4 px-2"
+            prefetch={false}
+          >
             <div className="pr-2 lg:pr-4 flex items-center">
               <FaWallet /> <span className="pl-2">Wallet</span>
             </div>
           </Link>
-          <Link href="/cart" className="text-sm font-medium hover:underline underline-offset-4 px-2" prefetch={false}>
+          <Link
+            href="/cart"
+            className="text-sm font-medium hover:underline underline-offset-4 px-2"
+            prefetch={false}
+          >
             <div className="pr-2 lg:pr-4 flex items-center">
               <FaShoppingCart /> <span className="pl-2">Cart</span>
             </div>
           </Link>
-          <Link href="/contact" className="text-sm font-medium hover:underline underline-offset-4 px-2" prefetch={false}>
+          <Link
+            href="/contact"
+            className="text-sm font-medium hover:underline underline-offset-4 px-2"
+            prefetch={false}
+          >
             <div className="pr-2 lg:pr-4 flex items-center">
               <FaHeadphonesAlt /> <span className="pl-2">Contact Us</span>
             </div>
@@ -82,7 +112,7 @@ export default function Appbar() {
           ) : (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center p-2 rounded-full bg-[#141c2e] text-white hover:bg-[#272e3f]">
+                <button className="flex items-center  rounded-full   ">
                   {!session?.user?.image ? (
                     <UserRound size={24} />
                   ) : (
@@ -92,7 +122,7 @@ export default function Appbar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="dark:shadow-[#030712] translate-y-8 scale-110 -translate-x-10 shadow-lg bg-white">
                 <DropdownMenuLabel className="flex gap-4 items-center">
-                  <div className="!w-[2rem] flex items-center p-[0.2rem] justify-center !h-[2rem]">
+                  <div className=" flex items-center  justify-center ">
                     {!session?.user?.image ? (
                       <UserRound size={24} />
                     ) : (
@@ -108,23 +138,23 @@ export default function Appbar() {
                 </DropdownMenuLabel>
                 <DropdownMenuItem
                   className="flex gap-2 cursor-pointer text-black/70 hover:text-black transition"
-                  onClick={() => router.push('/')}
+                  onClick={() => router.push("/")}
                 >
-                  <FaHome/>
+                  <FaHome />
                   <span>Home</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="flex gap-2 cursor-pointer text-black/70 hover:text-black transition"
-                  onClick={() => router.push('/all-items')}
+                  onClick={() => router.push("/all-items")}
                 >
                   <MdOutlineProductionQuantityLimits />
                   <span>All Items</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="flex gap-2 cursor-pointer text-black/70 hover:text-black transition"
-                  onClick={() => router.push('/list-an-item')}
+                  onClick={() => router.push("/list-an-item")}
                 >
-                  <FaPen/>
+                  <FaPen />
                   <span>List an Item</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -166,8 +196,11 @@ export default function Appbar() {
               className="text-sm font-medium hover:underline underline-offset-4 px-4"
               prefetch={false}
             >
-                <span className="flex items-center">
-              Orders <span className="px-2"><BsBox/></span>
+              <span className="flex items-center">
+                Orders{" "}
+                <span className="px-2">
+                  <BsBox />
+                </span>
               </span>
             </Link>
             <Link
@@ -176,7 +209,10 @@ export default function Appbar() {
               prefetch={false}
             >
               <span className="flex items-center">
-              Wallet <span className="px-2"><FaWallet /></span>
+                Wallet{" "}
+                <span className="px-2">
+                  <FaWallet />
+                </span>
               </span>
             </Link>
             <Link
@@ -184,8 +220,11 @@ export default function Appbar() {
               className="text-sm font-medium hover:underline underline-offset-4 px-4"
               prefetch={false}
             >
-        <span className="flex items-center">
-              Cart <span className="px-2"><FaShoppingCart /></span>
+              <span className="flex items-center">
+                Cart{" "}
+                <span className="px-2">
+                  <FaShoppingCart />
+                </span>
               </span>
             </Link>
             <Link
@@ -193,8 +232,11 @@ export default function Appbar() {
               className="text-sm font-medium hover:underline underline-offset-4 px-4"
               prefetch={false}
             >
-                 <span className="flex items-center">
-              Contact Us <span className="px-2"><FaHeadphonesAlt /></span>
+              <span className="flex items-center">
+                Contact Us{" "}
+                <span className="px-2">
+                  <FaHeadphonesAlt />
+                </span>
               </span>
             </Link>
           </nav>
