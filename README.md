@@ -23,7 +23,8 @@ While currently focused on Solana Devnet transactions for hackathon purposes, Xe
 - **Transaction Logic**: Users can send and receive money using their Solana wallet balance (as per now via selling or purchasing,In future will improve it by wallet to wallet transaction).
 - **E-commerce Functionality**: Users can sell and purchase products.
 - **Devnet Transactions**: Currently, transactions are conducted on Solana Devnet for testing and development purposes.
-- **Hashed Passwords**: Passwords are hashed before storing in the database for enhanced security.
+- **Secure Authentication**: Users can authenticate themselves via Google,Discord,Github for secure authentication.
+- **Add funds**: Users can Add solana from any faucet. But we have given faucet solana official link to add funds to solana wallet. Users can go to the site and give their public key to get a solana airdrop there.
 
 ## Setup Instructions
 
