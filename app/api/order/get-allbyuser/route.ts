@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 export const dynamic = 'force-dynamic';
+export const maxDuration =60;
 
 export async function GET() {
   try {
