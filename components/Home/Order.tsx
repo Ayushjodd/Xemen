@@ -123,6 +123,34 @@ const Order = () => {
     }
   };
 
+const cancelOrder = async (orderId:string) => {
+ try {
+  const response = await axios.put<SuccessResponse>("/api/order/cancelOrder",
+    {orderId,message: messages[orderId]}
+  );
+
+  if(response.data.success) {
+    setMessages((prev) => ({...prev,[orderId]:""}));
+    await fetchAllOrders();
+    toast.success("Order Cancelled Successfully");
+  }
+  else {
+    setMessages((prev) => ({
+      ...prev,
+      [orderId]: "Failed to Cancel order.",
+    }));
+    toast.error("Failed to Cancel Order");
+  }
+ } catch (error) {
+  console.error("Error cancelling the order",error);
+  setMessages((prev) => ({
+    ... prev,
+    [orderId]: "Error updating the order status",
+  }));
+  toast.error("Error updating the order status.");
+ }
+}
+
   if (loading) {
     return (
       <div>
@@ -281,8 +309,8 @@ const Order = () => {
                       className="w-full p-2 border border-gray-300 rounded-lg"
                     />
 
-                    <p className="pt-2">
-                      Enter received after receiving your order
+                    <p className="my-2">
+                      Enter received after and click on <code className="bg-gray-300 my-1 px-2 py-1">Mark as Received</code> button after receiving your order
                     </p>
 
                     <button
@@ -290,6 +318,12 @@ const Order = () => {
                       className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg"
                     >
                       Mark as Received
+                    </button>
+                    <button
+                      onClick={() => cancelOrder(order.id)}
+                      className="mt-2 ml-2 px-4 py-2 bg-red-600 text-white rounded-lg"
+                    >
+                      Cancel Order
                     </button>
                   </div>
                 )}
