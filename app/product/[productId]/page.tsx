@@ -16,6 +16,7 @@ import Loader from "@/components/Home/Loader";
 import { FaShoppingCart } from "react-icons/fa";
 import axios from "axios";
 import Appbar from "@/components/Appbar/Appbar";
+import { Badge } from "@/components/ui/badge";
 
 interface Product {
   id: string;
@@ -192,7 +193,11 @@ export default function ProductPage() {
                   {product.title}
                 </h1>
                 <p className="text-muted-foreground">Product Category</p> <br />
-                <p>{product.category}</p>
+                <p>
+                  <Badge className="rounded-2xl bg-[#ebbd5d] text-black hover:bg-[#ebbd5d] ">
+                    {product.category}
+                  </Badge>
+                </p>
                 <Button
                   className="mt-2 bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
                   onClick={() => router.push("/cart")}
