@@ -4,6 +4,7 @@ import { FiEye, FiEyeOff, FiCopy } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
 import Appbar from "../Appbar/Appbar";
+import { useRouter } from "next/navigation";
 
 interface Wallet {
   id: string;
@@ -18,6 +19,7 @@ export default function Wallet() {
   const [loading, setLoading] = useState(true);
   const [isPrivateKeyVisible, setIsPrivateKeyVisible] = useState(false);
   const [copyNotification, setCopyNotification] = useState<string | null>(null);
+   const router = useRouter();
 
   useEffect(() => {
     const fetchWallet = async () => {
@@ -141,7 +143,7 @@ export default function Wallet() {
           <div className="grid grid-cols-2 gap-4">
             <Button
               variant="outline"
-              onClick={() => alert("Will implement soon")}
+              onClick={() => router.push("/transaction")}
             >
               View Transactions
             </Button>
