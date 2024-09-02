@@ -7,20 +7,12 @@ import { Button } from "../ui/newButton";
 import toast, { Toaster } from "react-hot-toast";
 import { RxUpdate } from "react-icons/rx";
 import { GoArrowRight } from "react-icons/go";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 
 import MinusIcon from "../icons/MinusIcon";
 import PlusIcon from "../icons/PlusIcon";
 import TrashIcon from "../icons/TrashIcon";
 import { useRouter } from "next/navigation";
-import { SecondaryAppbar } from "../Appbar/SecondaryAppbar";
+import Appbar from "../Appbar/Appbar";
 
 export default function CartPage() {
   const router = useRouter();
@@ -35,7 +27,7 @@ export default function CartPage() {
 
         if (data.success) {
           setCart(data.cart.items);
-        } 
+        }
       } catch (error) {
         console.error("Error fetching cart:", error);
         toast.error("Failed to load cart");
@@ -114,41 +106,15 @@ export default function CartPage() {
   return (
     <>
       <Toaster />
+      <div className="mx-32 py-8">
+        <Appbar />
+      </div>
       <div className="container mx-auto px-4 md:px-6 mb-8">
-        <div className="py-12">
-        <SecondaryAppbar/>
-        </div>
         <div className="justify-between flex mt-3">
-          <div className="mb-8">
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink className="font-semibold text-xl" href="/">
-                    Home
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbLink
-                    className="font-semibold text-xl"
-                    href="/all-items"
-                  >
-                    All Items
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage className="font-semibold text-xl">
-                    Your Cart
-                  </BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
           <div>
             <Button
               onClick={() => router.push("/all-items")}
-              className=" bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
+              className=" bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 mb-6"
             >
               Browse more products{" "}
               <span className="text-xl pl-1 ">
@@ -252,10 +218,9 @@ export default function CartPage() {
               className="bg-green-600 hover:bg-green-700 transition-all text-lg"
               size="lg"
               onClick={() => {
-                setShowSolanaModal(true)
-                alert("Will implement in future")
-              }
-            }
+                setShowSolanaModal(true);
+                alert("Will implement in future");
+              }}
             >
               Pay via Solana
             </Button>
