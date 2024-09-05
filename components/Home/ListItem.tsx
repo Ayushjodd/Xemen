@@ -15,6 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Appbar from "../Appbar/Appbar";
+import { useRouter } from "next/navigation";
+import Loader from "./Loader";
 
 interface Listing {
   title: string;
@@ -35,6 +37,8 @@ export default function ListAnItem() {
   });
   const [imageUrlError, setImageUrlError] = useState<string | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
+  const router = useRouter();
+  const [loading,setLoading] = useState(false);
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -67,14 +71,17 @@ export default function ListAnItem() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (!validateImageUrl(newListing.imageUrl)) {
       setImageUrlError("Please enter a valid image URL.");
       return;
     }
-
+  
     setImageUrlError(null);
-
+    setLoading(true);
+  
+    const toastId = toast.loading("Listing item...");
+  
     try {
       const response = await fetch("/api/product/create", {
         method: "POST",
@@ -83,11 +90,11 @@ export default function ListAnItem() {
         },
         body: JSON.stringify(newListing),
       });
-
+  
       const result = await response.json();
-
+  
       if (result.success) {
-        toast.success("Product successfully listed!");
+        toast.success("Product successfully listed!", { id: toastId });
         setListings([...listings, newListing]);
         setNewListing({
           title: "",
@@ -96,20 +103,32 @@ export default function ListAnItem() {
           imageUrl: "",
           category: "",
         });
+
+        await new Promise(resolve => setTimeout(resolve, 3000)); 
+        router.push("/all-items");
       } else {
+        toast.error(result.message || "Failed to list item.", { id: toastId });
         setApiError(result.message || "Failed to list item.");
-        toast.error(result.message || "Failed to list item.");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
+      toast.error("Failed to list item.", { id: toastId });
       setApiError("Failed to list item.");
-      toast.error("Failed to list item.");
+    } finally {
+      setLoading(false);
     }
   };
+  
+  if(loading){
+    return <div>
+     <Toaster position="top-right" reverseOrder={false} />
+      <Loader/>
+      </div>
+  }
 
   return (
     <>
-      <Toaster />
+      <Toaster position="top-right" reverseOrder={false} />
       <div>
       <div className="mt-10 mx-10 md:mx-14 lg:mx-20">
       <Appbar/>
