@@ -8,6 +8,13 @@ import { SecondaryAppbar } from "../Appbar/SecondaryAppbar";
 import { Button } from "../ui/newButton";
 import { toast, Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select"; // Importing Shadcn Select components
 
 interface Product {
   id: number;
@@ -28,9 +35,18 @@ export default function AllItems() {
   const [itemsPerPage] = useState<number>(8);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const session = useSession();
   const router = useRouter();
+
+  const categories = [
+    "all",
+    "Electronics",
+    "Fashion",
+    "Tools",
+    "Groceries",
+    "NFT",
+    "Others",
+  ];
 
   useEffect(() => {
     if (!session.data) {
@@ -64,7 +80,6 @@ export default function AllItems() {
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
     setCurrentPage(1);
-    setFilterMenuOpen(false);
   };
 
   const filteredProducts =
@@ -85,16 +100,9 @@ export default function AllItems() {
       <div className="bg-muted/40 min-h-screen">
         <SecondaryAppbar />
         <main className="container mx-auto px-4 md:px-6 py-4">
+          {/* Large screen category buttons */}
           <div className="hidden sm:flex justify-center gap-4 mb-4">
-            {[
-              "all",
-              "Electronics",
-              "Fashion",
-              "Tools",
-              "Groceries",
-              "NFT",
-              "Others",
-            ].map((category) => (
+            {categories.map((category) => (
               <Button
                 variant="ghost"
                 key={category}
@@ -110,34 +118,24 @@ export default function AllItems() {
             ))}
           </div>
 
-          {filterMenuOpen && (
-            <div className="sm:hidden bg-white border rounded-lg shadow-lg p-4 mb-4">
-              <nav className="flex flex-col gap-2">
-                {[
-                  "all",
-                  "Electronics",
-                  "Fashion",
-                  "Tools",
-                  "Groceries",
-                  "NFT",
-                  "Others",
-                ].map((category) => (
-                  <Button
-                    variant="ghost"
-                    key={category}
-                    className={`px-4 py-2 ${
-                      selectedCategory === category
-                        ? "bg-blue-500 text-white"
-                        : "text-gray-700"
-                    }`}
-                    onClick={() => handleCategoryChange(category)}
-                  >
+          {/* Small screen select dropdown using Shadcn */}
+          <div className="sm:hidden mb-4">
+            <Select
+              onValueChange={handleCategoryChange}
+              value={selectedCategory}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category} value={category}>
                     {category.charAt(0).toUpperCase() + category.slice(1)}
-                  </Button>
+                  </SelectItem>
                 ))}
-              </nav>
-            </div>
-          )}
+              </SelectContent>
+            </Select>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {loading

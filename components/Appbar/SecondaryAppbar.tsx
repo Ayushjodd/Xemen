@@ -40,16 +40,16 @@ export const SecondaryAppbar = () => {
       <header className=" sticky top-0 z-10 p-2 bg-[#] border-b">
         <div className="container mx-auto px-4 md:px-6 flex items-center justify-between h-16">
           <Link href="/" className="" prefetch={false}>
-            <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text  text-5xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
+            <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-3xl sm:text-4xl md:text-5xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
               Xemen
             </span>
           </Link>
           <div className="relative flex-1 max-w-md">
-            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground hidden md:block" />
             <Input
               type="search"
               placeholder="Search for products..."
-              className="w-full bg-background pl-10 pr-12 py-2 rounded-lg shadow-sm"
+              className="w-full bg-background pl-10 pr-12 py-2 rounded-lg shadow-sm hidden md:block"
             />
           </div>
           <div className="flex items-center gap-4">
@@ -67,6 +67,7 @@ export const SecondaryAppbar = () => {
             </Button>
 
             <Button
+              className="hidden md:block"
               size="icon"
               variant="ghost"
               onClick={() => {
