@@ -6,6 +6,7 @@ import { Benifits } from "./Benifits";
 import { Features } from "./Features";
 import { Listings } from "./Listings";
 import { Main } from "./Main";
+import ScrollToTop from "../shared/ScrollToTop";
 
 export default function Component() {
   return (
@@ -29,6 +30,7 @@ export default function Component() {
         </section>
       </main>
       <Footer />
+      <ScrollToTop />
     </div>
   );
 }
