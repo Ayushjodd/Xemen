@@ -5,7 +5,6 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "../ui/newButton";
-import { CoolMode } from "@/components/magicui/cool-mode";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SiSolana } from "react-icons/si";
@@ -59,21 +58,14 @@ export default function Appbar() {
       <header className="px-2 lg:px-4 h-14 flex items-center justify-between border rounded-full">
         <div className="flex gap-2">
           <div className="mt-2 ml-2">
-            <CoolMode
-              options={{
-                particle:
-                  "https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png",
-              }}
+            <Link
+              href="/"
+              className="flex items-center justify-center"
+              prefetch={false}
             >
-              <Link
-                href="/"
-                className="flex items-center justify-center"
-                prefetch={false}
-              >
-                <SiSolana className="h-6 w-6" />
-                <span className="sr-only">Solana Marketplace</span>
-              </Link>
-            </CoolMode>
+              <SiSolana className="h-6 w-6" />
+              <span className="sr-only">Solana Marketplace</span>
+            </Link>
           </div>
           <div className="">
             <DropdownMenu>
