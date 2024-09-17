@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import { CoolMode } from "@/components/magicui/cool-mode";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SiSolana } from "react-icons/si";
@@ -51,14 +52,21 @@ export default function Appbar() {
   return (
     <div>
       <header className="px-2 lg:px-4 h-14 flex items-center justify-between border rounded-full">
-        <Link
-          href="#"
-          className="flex items-center justify-center"
-          prefetch={false}
+        <CoolMode
+          options={{
+            particle:
+              "https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png",
+          }}
         >
-          <SiSolana className="h-6 w-6" />
-          <span className="sr-only">Solana Marketplace</span>
-        </Link>
+          <Link
+            href="/"
+            className="flex items-center justify-center"
+            prefetch={false}
+          >
+            <SiSolana className="h-6 w-6" />
+            <span className="sr-only">Solana Marketplace</span>
+          </Link>
+        </CoolMode>
 
         <nav className="hidden sm:flex items-center gap-4 sm:gap-6">
           <Link
@@ -147,7 +155,7 @@ export default function Appbar() {
                   className="flex gap-2 cursor-pointer text-black/70 hover:text-black transition"
                   onClick={() => router.push("/profile")}
                 >
-                  <UserRound size={15}/>
+                  <UserRound size={15} />
                   <span>Profile</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
