@@ -37,14 +37,12 @@ export const SecondaryAppbar = () => {
   }, [session]);
   return (
     <>
-      <header className="bg-background shadow-sm sticky top-0 z-10 p-2">
+      <header className=" sticky top-0 z-10 p-2 bg-[#] border-b">
         <div className="container mx-auto px-4 md:px-6 flex items-center justify-between h-16">
-          <Link href="#" className="text-2xl font-bold" prefetch={false}>
-            <img
-              className="rounded-full hover:border-1"
-              width={200}
-              src="https://pbs.twimg.com/media/GVNAwakWgAAnSHP?format=png&name=small"
-            />
+          <Link href="/" className="" prefetch={false}>
+            <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text  text-5xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
+              Xemen
+            </span>
           </Link>
           <div className="relative flex-1 max-w-md">
             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -116,8 +114,8 @@ export const SecondaryAppbar = () => {
               </DropdownMenuTrigger>
               {user ? (
                 <DropdownMenuContent className="w-56">
-                   <DropdownMenuItem onSelect={() => router.push("/")}>
-                   Home
+                  <DropdownMenuItem onSelect={() => router.push("/")}>
+                    Home
                   </DropdownMenuItem>
                   <DropdownMenuItem onSelect={() => router.push("/profile")}>
                     Profile

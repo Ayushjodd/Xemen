@@ -30,7 +30,6 @@ export default function AllItems() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const session = useSession();
-  console.log(session);
   const router = useRouter();
 
   useEffect(() => {
@@ -99,7 +98,7 @@ export default function AllItems() {
               <Button
                 variant="ghost"
                 key={category}
-                className={`px-4 py-2 ${
+                className={`px-4 py-2 dark:text-white ${
                   selectedCategory === category
                     ? "bg-blue-500 text-white"
                     : "text-gray-700"

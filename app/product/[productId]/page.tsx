@@ -4,17 +4,9 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/newButton";
 import toast, { Toaster } from "react-hot-toast";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
+import axios from "axios";
 import Loader from "@/components/Home/Loader";
 import { FaShoppingCart } from "react-icons/fa";
-import axios from "axios";
 import Appbar from "@/components/Appbar/Appbar";
 import { Badge } from "@/components/ui/badge";
 
@@ -110,28 +102,38 @@ export default function ProductPage() {
       toast.error("Failed to remove item from cart");
     }
   };
+
   const handleBuyNow = async () => {
-    try {
-      const response = await axios.post<OrderResponse>(
-        `/api/order/create/${productId}`,
-        { quantity }
-      );
+    const transactionPromise = new Promise(async (resolve, reject) => {
+      try {
+        const loadingToastId = toast.loading("Transaction in progress...");
 
-      if (response.data.success) {
-        toast.success("Order placed successfully");
-        await router.push("/orders");
-        // Optionally handle successful order, e.g., redirect or update state
-      } else {
-        toast.error(
-          response.data.message?.toString() || "Failed to place order"
+        const response = await axios.post<OrderResponse>(
+          `/api/order/create/${productId}`,
+          { quantity }
         );
-      }
-    } catch (error: any) {
-      console.error("Error placing order:", error);
-      toast.error(String(error.response.data.message));
-    }
-  };
 
+        if (response.data.success) {
+          toast.success("Order placed successfully", { id: loadingToastId });
+          resolve(response.data);
+          await router.push("/orders");
+        } else {
+          toast.error(
+            response.data.message?.toString() || "Failed to place order",
+            {
+              id: loadingToastId,
+            }
+          );
+          reject(new Error(response.data.message)); // Reject the promise on failure
+        }
+      } catch (error: any) {
+        toast.error(error.response?.data?.message || "Failed to place order");
+        reject(error);
+      }
+    });
+
+    return transactionPromise;
+  };
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -154,30 +156,6 @@ export default function ProductPage() {
           <Appbar />
         </div>
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink className="font-semibold text-lg" href="/">
-                  Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  className="font-semibold text-lg"
-                  href="/all-items"
-                >
-                  Products
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage className="font-semibold text-lg">
-                  {product.title}
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
           <div className="grid md:grid-cols-2 gap-8 md:gap-12">
             <div className="w-full h-auto md:h-[600px] overflow-hidden rounded-md">
               <img
@@ -192,14 +170,12 @@ export default function ProductPage() {
                 <h1 className="text-3xl md:text-4xl font-bold">
                   {product.title}
                 </h1>
-                <p className="text-muted-foreground">Product Category</p> <br />
-                <p>
-                  <Badge className="rounded-2xl bg-[#ebbd5d] text-black hover:bg-[#ebbd5d] ">
-                    {product.category}
-                  </Badge>
-                </p>
+                <p className="text-muted-foreground">Product Category</p>
+                <Badge className="rounded-2xl bg-[#ebbd5d] text-black hover:bg-[#ebbd5d]">
+                  {product.category}
+                </Badge>
                 <Button
-                  className="mt-2 bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
+                  className="mt-2 ml-4 bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
                   onClick={() => router.push("/cart")}
                 >
                   Go to Cart
