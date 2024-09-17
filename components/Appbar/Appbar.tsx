@@ -1,6 +1,10 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 "use client";
+
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "../ui/newButton";
 import { CoolMode } from "@/components/magicui/cool-mode";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -28,6 +32,7 @@ import { MdOutlineProductionQuantityLimits } from "react-icons/md";
 import { FaPen } from "react-icons/fa6";
 
 export default function Appbar() {
+  const { setTheme } = useTheme();
   const router = useRouter();
   const { data: session } = useSession();
   const [user, setUser] = useState(false);
@@ -52,21 +57,44 @@ export default function Appbar() {
   return (
     <div>
       <header className="px-2 lg:px-4 h-14 flex items-center justify-between border rounded-full">
-        <CoolMode
-          options={{
-            particle:
-              "https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png",
-          }}
-        >
-          <Link
-            href="/"
-            className="flex items-center justify-center"
-            prefetch={false}
-          >
-            <SiSolana className="h-6 w-6" />
-            <span className="sr-only">Solana Marketplace</span>
-          </Link>
-        </CoolMode>
+        <div className="flex gap-2">
+          <div className="mt-2 ml-2">
+            <CoolMode
+              options={{
+                particle:
+                  "https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png",
+              }}
+            >
+              <Link
+                href="/"
+                className="flex items-center justify-center"
+                prefetch={false}
+              >
+                <SiSolana className="h-6 w-6" />
+                <span className="sr-only">Solana Marketplace</span>
+              </Link>
+            </CoolMode>
+          </div>
+          <div className="">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                  <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <span className="sr-only">Toggle theme</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setTheme("light")}>
+                  Light - suggested🫡
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("dark")}>
+                  Dark
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
 
         <nav className="hidden sm:flex items-center gap-4 sm:gap-6">
           <Link
@@ -120,7 +148,7 @@ export default function Appbar() {
           ) : (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center  rounded-full   ">
+                <button className="flex items-center rounded-full">
                   {!session?.user?.image ? (
                     <UserRound size={24} />
                   ) : (
@@ -130,7 +158,7 @@ export default function Appbar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="dark:shadow-[#030712] translate-y-8 scale-110 -translate-x-10 shadow-lg bg-white">
                 <DropdownMenuLabel className="flex gap-4 items-center">
-                  <div className=" flex items-center  justify-center ">
+                  <div className="flex items-center justify-center">
                     {!session?.user?.image ? (
                       <UserRound size={24} />
                     ) : (
@@ -138,8 +166,10 @@ export default function Appbar() {
                     )}
                   </div>
                   <div className="flex flex-col">
-                    <span className="max-w-[200px]">{session?.user?.name}</span>
-                    <span className="text-[0.8rem] max-w-[200px] text-gray-400">
+                    <span className="max-w-[200px] dark:text-black">
+                      {session?.user?.name}
+                    </span>
+                    <span className="text-[0.8rem] max-w-[200px] text-gray-400 ">
                       {session?.user?.email}
                     </span>
                   </div>
