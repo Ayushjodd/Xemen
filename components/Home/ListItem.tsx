@@ -38,7 +38,7 @@ export default function ListAnItem() {
   const [imageUrlError, setImageUrlError] = useState<string | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
   const router = useRouter();
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -71,17 +71,17 @@ export default function ListAnItem() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!validateImageUrl(newListing.imageUrl)) {
       setImageUrlError("Please enter a valid image URL.");
       return;
     }
-  
+
     setImageUrlError(null);
     setLoading(true);
-  
+
     const toastId = toast.loading("Listing item...");
-  
+
     try {
       const response = await fetch("/api/product/create", {
         method: "POST",
@@ -90,9 +90,9 @@ export default function ListAnItem() {
         },
         body: JSON.stringify(newListing),
       });
-  
+
       const result = await response.json();
-  
+
       if (result.success) {
         toast.success("Product successfully listed!", { id: toastId });
         setListings([...listings, newListing]);
@@ -104,7 +104,7 @@ export default function ListAnItem() {
           category: "",
         });
 
-        await new Promise(resolve => setTimeout(resolve, 3000)); 
+        await new Promise((resolve) => setTimeout(resolve, 3000));
         router.push("/all-items");
       } else {
         toast.error(result.message || "Failed to list item.", { id: toastId });
@@ -118,27 +118,28 @@ export default function ListAnItem() {
       setLoading(false);
     }
   };
-  
-  if(loading){
-    return <div>
-     <Toaster position="top-right" reverseOrder={false} />
-      <Loader/>
+
+  if (loading) {
+    return (
+      <div>
+        <Toaster position="top-right" reverseOrder={false} />
+        <Loader />
       </div>
+    );
   }
 
   return (
     <>
       <Toaster position="top-right" reverseOrder={false} />
-      <div>
-      <div className="mt-10 mx-10 md:mx-14 lg:mx-20">
-      <Appbar/>
-      </div>
-        <div className="flex justify-center mt-40"></div>
-        <div className="container mx-auto">
+      <div className="">
+        <div className="mt-10 mx-10 md:mx-14 lg:mx-20">
+          <Appbar />
+        </div>
+        <div className="container mx-auto mt-10">
           <div className="mx-auto max-w-2xl">
             <div className="border rounded-lg shadow-lg">
               <form
-                className="bg-white p-6 rounded-lg shadow-md"
+                className="bg-white dark:bg-transparent p-6 rounded-lg shadow-md"
                 onSubmit={handleSubmit}
               >
                 <div className="mb-4">
@@ -152,7 +153,7 @@ export default function ListAnItem() {
                     value={newListing.title}
                     onChange={handleInputChange}
                     placeholder="Enter product name"
-                    className="w-full border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                    className="w-full "
                   />
                 </div>
                 <div className="mb-4">
@@ -168,7 +169,7 @@ export default function ListAnItem() {
                     value={newListing.description}
                     onChange={handleInputChange}
                     placeholder="Enter product description"
-                    className="w-full border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                    className="w-full  "
                   />
                 </div>
                 <div className="mb-4">
@@ -203,7 +204,7 @@ export default function ListAnItem() {
                     value={newListing.price}
                     onChange={handleInputChange}
                     placeholder="Enter product price"
-                    className="w-full border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                    className="w-full  "
                     min="0"
                     step="any"
                   />
@@ -219,7 +220,7 @@ export default function ListAnItem() {
                     value={newListing.imageUrl}
                     onChange={handleInputChange}
                     placeholder="Enter image URL"
-                    className="w-full border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                    className="w-full "
                   />
                   {imageUrlError && (
                     <p className="text-red-500 text-sm mt-1">{imageUrlError}</p>

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useEffect, useState } from "react";
@@ -5,6 +6,8 @@ import axios from "axios";
 import Loader from "./Loader";
 import toast, { Toaster } from "react-hot-toast";
 import { SecondaryAppbar } from "../Appbar/SecondaryAppbar";
+import { Button } from "../ui/newButton";
+import { Input } from "../ui/input";
 
 interface OrderItem {
   quantity: number;
@@ -123,33 +126,33 @@ const Order = () => {
     }
   };
 
-const cancelOrder = async (orderId:string) => {
- try {
-  const response = await axios.put<SuccessResponse>("/api/order/cancelOrder",
-    {orderId,message: messages[orderId]}
-  );
+  const cancelOrder = async (orderId: string) => {
+    try {
+      const response = await axios.put<SuccessResponse>(
+        "/api/order/cancelOrder",
+        { orderId, message: messages[orderId] }
+      );
 
-  if(response.data.success) {
-    setMessages((prev) => ({...prev,[orderId]:""}));
-    await fetchAllOrders();
-    toast.success("Order Cancelled Successfully");
-  }
-  else {
-    setMessages((prev) => ({
-      ...prev,
-      [orderId]: "Failed to Cancel order.",
-    }));
-    toast.error("Failed to Cancel Order");
-  }
- } catch (error) {
-  console.error("Error cancelling the order",error);
-  setMessages((prev) => ({
-    ... prev,
-    [orderId]: "Error updating the order status",
-  }));
-  toast.error("Error updating the order status.");
- }
-}
+      if (response.data.success) {
+        setMessages((prev) => ({ ...prev, [orderId]: "" }));
+        await fetchAllOrders();
+        toast.success("Order Cancelled Successfully");
+      } else {
+        setMessages((prev) => ({
+          ...prev,
+          [orderId]: "Failed to Cancel order.",
+        }));
+        toast.error("Failed to Cancel Order");
+      }
+    } catch (error) {
+      console.error("Error cancelling the order", error);
+      setMessages((prev) => ({
+        ...prev,
+        [orderId]: "Error updating the order status",
+      }));
+      toast.error("Error updating the order status.");
+    }
+  };
 
   if (loading) {
     return (
@@ -170,11 +173,10 @@ const cancelOrder = async (orderId:string) => {
   return (
     <>
       <Toaster />
-      <div className="container mx-auto p-6 max-w-6xl">
-        <SecondaryAppbar />
+      <SecondaryAppbar />
+      <div className="container mx-auto  max-w-6xl ">
         <h1 className="text-4xl font-bold mb-6 text-center mt-4">My Orders</h1>
 
-        {/* Filter Buttons for large screens */}
         <div className="hidden sm:flex mb-6 justify-center space-x-4">
           {Object.values(Status).map((status) => (
             <button
@@ -240,7 +242,7 @@ const cancelOrder = async (orderId:string) => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-6  rounded-md">
           {filteredOrders.length === 0 ? (
             <div className="text-center text-lg font-semibold">
               No orders found
@@ -249,7 +251,7 @@ const cancelOrder = async (orderId:string) => {
             filteredOrders.map((order) => (
               <div
                 key={order.id}
-                className="p-6 border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                className="p-6 border dark:bg-[#0d1526] rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
               >
                 <h2 className="text-2xl font-semibold mb-3">
                   Order ID: {order.id}
@@ -273,9 +275,9 @@ const cancelOrder = async (orderId:string) => {
                   </span>
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4 ">
                   {order.quantity.map((item, index) => (
-                    <div key={index} className="flex items-center space-x-4">
+                    <div key={index} className="flex items-center space-x-4 ">
                       <img
                         src={item.productImage}
                         alt={item.productTitle}
@@ -296,7 +298,7 @@ const cancelOrder = async (orderId:string) => {
 
                 {order.orderStatus === Status.Pending && (
                   <div className="mt-4">
-                    <input
+                    <Input
                       type="text"
                       placeholder="Enter message here"
                       value={messages[order.id] || ""}
@@ -306,25 +308,30 @@ const cancelOrder = async (orderId:string) => {
                           [order.id]: e.target.value,
                         }))
                       }
-                      className="w-full p-2 border border-gray-300 rounded-lg"
+                      className="w-full"
                     />
 
                     <p className="my-2">
-                      Enter received after and click on <code className="bg-gray-300 my-1 px-2 py-1">Mark as Received</code> button after receiving your order
+                      Enter 'received' after and click on{" "}
+                      <code className="bg-gray-300 my-1 px-2 py-1 dark:bg-blue-500">
+                        Mark as Received
+                      </code>{" "}
+                      button after receiving your order
                     </p>
 
-                    <button
+                    <Button
                       onClick={() => handleMarkAsReceived(order.id)}
-                      className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg"
+                      className="mt-2 "
                     >
                       Mark as Received
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="destructive"
                       onClick={() => cancelOrder(order.id)}
-                      className="mt-2 ml-2 px-4 py-2 bg-red-600 text-white rounded-lg"
+                      className="ml-3"
                     >
                       Cancel Order
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
