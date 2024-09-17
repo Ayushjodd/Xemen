@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"; // Importing Shadcn Select components
+import TopLoader from "../shared/TopLoader";
 
 interface Product {
   id: number;
@@ -96,6 +97,7 @@ export default function AllItems() {
 
   return (
     <>
+      <TopLoader />
       <Toaster />
       <div className="bg-muted/40 min-h-screen">
         <SecondaryAppbar />

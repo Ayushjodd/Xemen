@@ -124,7 +124,7 @@ export default function ProductPage() {
               id: loadingToastId,
             }
           );
-          reject(new Error(response.data.message)); // Reject the promise on failure
+          reject(new Error(response.data.message));
         }
       } catch (error: any) {
         toast.error(error.response?.data?.message || "Failed to place order");
@@ -222,7 +222,7 @@ export default function ProductPage() {
                 )}
                 <Button
                   size="lg"
-                  className="w-full md:w-auto"
+                  className="w-full md:w-auto focus:ring-4 focus:ring-slate-500"
                   variant="outline"
                   onClick={handleBuyNow}
                 >

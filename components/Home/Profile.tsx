@@ -1,7 +1,7 @@
 "use client";
 import Appbar from "../Appbar/Appbar";
 import { useEffect, useState } from "react";
-import { ProfileSkeleton } from "../shared/ProfileSkeleton";
+import TopLoader from "../shared/TopLoader";
 
 interface Details {
   name: string;
@@ -52,6 +52,7 @@ export const Profile = () => {
 
   return (
     <>
+      <TopLoader />
       <div>
         <div className="mt-10 mx-12 md:mx-14 lg:mx-20 ">
           <Appbar />
