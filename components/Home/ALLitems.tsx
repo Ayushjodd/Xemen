@@ -14,7 +14,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select"; // Importing Shadcn Select components
+} from "../ui/select";
 import TopLoader from "../shared/TopLoader";
 
 interface Product {
@@ -32,8 +32,6 @@ interface Product {
 
 export default function AllItems() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [itemsPerPage] = useState<number>(8);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const session = useSession();
@@ -80,20 +78,12 @@ export default function AllItems() {
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
-    setCurrentPage(1);
   };
 
   const filteredProducts =
     selectedCategory === "all"
       ? products
       : products.filter((product) => product.category === selectedCategory);
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredProducts.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
 
   return (
     <>
@@ -102,7 +92,6 @@ export default function AllItems() {
       <div className="bg-muted/40 min-h-screen">
         <SecondaryAppbar />
         <main className="container mx-auto px-4 md:px-6 py-4">
-          {/* Large screen category buttons */}
           <div className="hidden sm:flex justify-center gap-4 mb-4">
             {categories.map((category) => (
               <Button
@@ -120,7 +109,6 @@ export default function AllItems() {
             ))}
           </div>
 
-          {/* Small screen select dropdown using Shadcn */}
           <div className="sm:hidden mb-4">
             <Select
               onValueChange={handleCategoryChange}
@@ -141,10 +129,10 @@ export default function AllItems() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {loading
-              ? Array.from({ length: 8 }).map((_, index) => (
+              ? Array.from({ length: 9 }).map((_, index) => (
                   <SkeletonCard key={index} />
                 ))
-              : currentItems.map((product) => (
+              : filteredProducts.map((product) => (
                   <CardComp
                     productId={product.id.toString()}
                     key={product.id}
